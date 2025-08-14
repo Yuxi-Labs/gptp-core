@@ -1,0 +1,40 @@
+{
+  "$doctype": "gptp",
+  "title": "hello-world",
+  "description": "A minimal GPTP file to verify schema and core functionality.",
+  "metadata": {
+    "target": "openai"
+  },
+  "variables": {
+    "user_name": {
+      "type": "string",
+      "description": "The name of the user",
+      "example": "Alice"
+    }
+  },
+  "parameters": {
+    "model": "gpt-4",
+    "temperature": 0.2
+  },
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a friendly assistant."
+    },
+    {
+      "role": "user",
+      "content": "Hello ${{ user_name }}!"
+    }
+  ],
+  "output_contract": {
+    "type": "string"
+  },
+  "tests": [
+    {
+      "input": {
+        "user_name": "Bob"
+      },
+      "expect": "Hello Bob!"
+    }
+  ]
+}
