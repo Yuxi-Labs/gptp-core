@@ -16,7 +16,7 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsc --project tsconfig.json",
+    "build": "npm run clean && tsc",
     "clean": "rimraf dist",
     "prebuild": "npm run clean && npm run build",
     "lint": "eslint src --ext .ts",
