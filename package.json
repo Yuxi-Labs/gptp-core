@@ -24,7 +24,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "dev": "tsx src/index.ts",
-    "dev:debug": "cross-env GPTP_DEBUG=true tsx src/index.ts"
+    "dev:debug": "cross-env GPTP_DEBUG=true tsx src/index.ts",
+    "gptp:execute": "node src/devtools/cli/execute.ts",
+    "gptp:execute:mock": "cross-env MOCK=true node src/devtools/cli/execute.ts"
   },
   "keywords": [
     "gptp",
