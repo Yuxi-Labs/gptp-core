@@ -12,11 +12,6 @@ import {
 
 import type { GptpPrompt } from '../../types'
 
-type ExecutionResult = {
-    modelOutput: string
-    [key: string]: any
-}
-
 // Parses CLI input like: name=Bob mood=confused
 function parseInputArgs(args: string[]): Record<string, any> {
     const input: Record<string, any> = {}
@@ -45,9 +40,9 @@ export async function run(): Promise<void> {
     const parsedPrompt = await parsePrompt(absPath)
     const normalized: GptpPrompt = normalizePrompt(parsedPrompt)
 
-    await loadProfile('default') // future use
+    await loadProfile('default') // Future use — looks cool for now
 
-    const result: ExecutionResult = await executePrompt(normalized, {
+    const result = await executePrompt(normalized, {
         input,
         run: true,
     })
@@ -57,7 +52,10 @@ export async function run(): Promise<void> {
         process.exit(1)
     }
 
-    const output = formatPrompt(result.modelOutput, normalized)
+    const output = formatPrompt(result.modelOutput, {
+        outputFormat: normalized.params?.outputFormat,
+        outputSchema: normalized.params?.outputSchema,
+    })
 
     console.log('=== Model Output ===\n')
     console.log(output)
