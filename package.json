@@ -16,17 +16,21 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "npm run clean && tsc",
     "clean": "rimraf dist",
-    "prebuild": "npm run clean && npm run build",
+    "build": "rimraf dist && tsc",
+
+
     "lint": "eslint src --ext .ts",
     "format": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
+
     "dev": "tsx src/index.ts",
     "dev:debug": "cross-env GPTP_DEBUG=true tsx src/index.ts",
-    "gptp:execute": "node src/devtools/cli/execute.ts",
-    "gptp:execute:mock": "cross-env MOCK=true node src/devtools/cli/execute.ts"
+
+
+    "gptp:execute": "tsx src/devtools/cli/execute.ts",
+    "gptp:execute:mock": "cross-env MOCK=true tsx src/devtools/cli/execute.ts"
   },
   "keywords": [
     "gptp",
