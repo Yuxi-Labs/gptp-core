@@ -1,6 +1,6 @@
 // src/engine/normalize/index.ts
 
-import { cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash-es'
 import type { GptpPrompt } from '../../types'
 
 export function normalizePrompt(input: GptpPrompt): GptpPrompt {

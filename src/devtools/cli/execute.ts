@@ -1,7 +1,4 @@
-// src/devtools/cli/execute.ts
-
 import path from 'path'
-
 import {
     parsePrompt,
     normalizePrompt,
@@ -10,9 +7,13 @@ import {
     loadProfile,
 } from '../../engine'
 
+import { loadEnvFile } from '../../engine/utils/env'
+import { validatePrompt } from '../../engine/validate/validatePrompt'
+import { loadSchema } from '../../engine/schema/loadSchema'
 import type { GptpPrompt } from '../../types'
 
-// Parses CLI input like: name=Bob mood=confused
+loadEnvFile()
+
 function parseInputArgs(args: string[]): Record<string, any> {
     const input: Record<string, any> = {}
 
@@ -24,6 +25,17 @@ function parseInputArgs(args: string[]): Record<string, any> {
     }
 
     return input
+}
+
+function validateRequiredInputs(prompt: GptpPrompt, input: Record<string, any>) {
+    const variables = prompt.variables || {}
+
+    for (const [key, def] of Object.entries(variables)) {
+        if (def.required && input[key] === undefined) {
+            console.error(`❌ Missing required input: "${key}"`)
+            process.exit(1)
+        }
+    }
 }
 
 export async function run(): Promise<void> {
@@ -38,9 +50,19 @@ export async function run(): Promise<void> {
     const input = parseInputArgs(restArgs)
 
     const parsedPrompt = await parsePrompt(absPath)
-    const normalized: GptpPrompt = normalizePrompt(parsedPrompt)
 
-    await loadProfile('default') // Future use — looks cool for now
+    // 🧠 Now with validation that works
+    const schema = await loadSchema()
+    const isValid = validatePrompt(parsedPrompt, schema)
+    if (!isValid) {
+        console.error('❌ Prompt failed schema validation.')
+        process.exit(1)
+    }
+
+    const normalized: GptpPrompt = normalizePrompt(parsedPrompt)
+    validateRequiredInputs(normalized, input)
+
+    await loadProfile('default') // for future dreams and delusions
 
     const result = await executePrompt(normalized, {
         input,
@@ -53,8 +75,8 @@ export async function run(): Promise<void> {
     }
 
     const output = formatPrompt(result.modelOutput, {
-        outputFormat: normalized.params?.outputFormat,
-        outputSchema: normalized.params?.outputSchema,
+        outputFormat: normalized.output_format || 'plain-text',
+        outputSchema: normalized.output_schema,
     })
 
     console.log('=== Model Output ===\n')
