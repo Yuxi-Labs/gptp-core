@@ -1,9 +1,15 @@
 import fs from 'fs/promises'
 import path from 'path'
+import { fileURLToPath } from 'url'
 
+// Resolve __dirname for ESM
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+// Scaffold template — full GPTP file structure
 const DEFAULT_PROMPT = {
     $doctype: 'gptp',
-    schemaVersion: '1.2.0',
+    schemaVersion: process.env.GPTP_SCHEMA || '1.2.0',
     promptVersion: '1.0.0',
     title: 'My Prompt',
     description: 'A new prompt created with gptp init.',
@@ -28,12 +34,13 @@ const DEFAULT_PROMPT = {
     output_format: 'plain-text'
 }
 
+// Simple CLI flag parser: --key=value
 function parseFlags(args: string[]) {
-    const flags: Record<string, string> = {}
+    const flags: Record<string, string | boolean> = {}
     for (const arg of args) {
-        const [key, value] = arg.split('=')
-        if (key && value !== undefined) {
-            flags[key.replace(/^--/, '')] = value
+        if (arg.startsWith('--')) {
+            const [key, value] = arg.slice(2).split('=')
+            flags[key] = value !== undefined ? value : true
         }
     }
     return flags
@@ -43,9 +50,10 @@ export async function initPromptCLI() {
     const [, , ...args] = process.argv
     const flags = parseFlags(args)
 
-    const title = flags.title || 'My Prompt'
-    const description = flags.description || 'A new prompt created with gptp init.'
-    const file = flags.out || 'my-prompt.gptp'
+    const title = (flags.title as string) || DEFAULT_PROMPT.title
+    const description = (flags.description as string) || DEFAULT_PROMPT.description
+    const file = (flags.out as string) || 'my-prompt.gptp'
+    const overwrite = !!flags.overwrite
 
     const prompt = {
         ...DEFAULT_PROMPT,
@@ -57,10 +65,13 @@ export async function initPromptCLI() {
 
     try {
         await fs.access(absPath)
-        console.error(`❌ File already exists: ${file}`)
-        process.exit(1)
+        if (!overwrite) {
+            console.error(`❌ File already exists: ${file}`)
+            console.error(`   Use --overwrite to overwrite it.`)
+            process.exit(1)
+        }
     } catch {
-        // It's fine. File doesn't exist.
+        // File doesn't exist, proceed
     }
 
     try {
@@ -70,4 +81,9 @@ export async function initPromptCLI() {
         console.error(`❌ Failed to write file: ${err.message}`)
         process.exit(1)
     }
+}
+
+// Run if called directly
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    initPromptCLI()
 }

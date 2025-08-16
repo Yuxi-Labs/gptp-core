@@ -1,3 +1,5 @@
+// src/devtools/cli/diff.ts
+
 import { diffPromptKeys, diffPromptDeep } from '../../engine/diff'
 import { parsePrompt } from '../../engine/parse'
 import path from 'path'
@@ -38,9 +40,7 @@ async function main() {
     }
 }
 
-if (require.main === module) {
-    main().catch(err => {
-        console.error('❌ Error during diff:', err)
-        process.exit(1)
-    })
-}
+main().catch(err => {
+    console.error('❌ Error during diff:', err)
+    process.exit(1)
+})

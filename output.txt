@@ -1,0 +1,10 @@
+
+> @yuxi-labs/gptp-core@0.1.0 gptp:execute:mock
+> cross-env MOCK=true tsx src/devtools/cli/execute.ts docs/examples/hello-world.gptp -- user_name=William
+
+[dotenv@17.2.1] injecting env (1) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+2025-08-16T12:00:12.815Z [GPTP][INFO][[schema] 📡 Fetching schema from: https://raw.githubusercontent.com/Yuxi-Labs/gptp/refs/tags/v1.2.0/schema/gptp.schema.json]
+2025-08-16T12:00:14.805Z [GPTP][INFO][[schema] ✅ Remote schema loaded successfully. Caching...]
+=== Model Output ===
+
+[Mocked response] Received 2 messages. Model: gpt-4
