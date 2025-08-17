@@ -1,0 +1,2535 @@
+
+=== demo.gptp ===
+{
+  "$doctype": "gptp",
+  "schemaVersion": "1.2.0",
+  "promptVersion": "1.0.0",
+  "title": "Init Test",
+  "description": "From CLI",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Hello {{name}}!"
+    }
+  ],
+  "variables": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "description": "The name of the user",
+      "example": "Alice"
+    }
+  },
+  "params": {
+    "model": "gpt-4",
+    "temperature": 0.7
+  },
+  "output_format": "plain-text"
+}
+
+=== docs\examples\hello-world-2.gptp ===
+{
+  "$doctype": "gptp",
+  "schemaVersion": "1.2.0",
+  "promptVersion": "1.0.0",
+  "title": "hello-world",
+  "description": "A minimal GPTP file to verify schema and core functionality.",
+  "system": "You are a friendly assistant.",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Hello {{user_name}}!"
+    }
+  ],
+  "variables": {
+    "user_names": {
+      "type": "string",
+      "description": "The name of the user",
+      "example": "Alice",
+      "required": true
+    }
+  },
+  "params": {
+    "model": "gpt-4",
+    "temperature": 0.2
+  },
+  "metadata": {
+    "target": "openai"
+  },
+  "output_format": "plain-text",
+  "output_schema": {
+    "type": "string"
+  },
+  "tests": [
+    {
+      "name": "hello-bob",
+      "input": {
+        "user_name": "Bob"
+      },
+      "expect_exact": "Hello Bob!"
+    }
+  ]
+}
+
+
+=== docs\examples\hello-world.gptp ===
+{
+  "$doctype": "gptp",
+  "schemaVersion": "1.2.0",
+  "promptVersion": "1.0.0",
+  "title": "hello-world",
+  "description": "A minimal GPTP file to verify schema and core functionality.",
+  "system": "You are a friendly assistant.",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Hello {{user_name}}!"
+    }
+  ],
+  "variables": {
+    "user_name": {
+      "type": "string",
+      "description": "The name of the user",
+      "example": "Alice",
+      "required": true
+    }
+  },
+  "params": {
+    "model": "gpt-4",
+    "temperature": 0.2
+  },
+  "metadata": {
+    "target": "openai"
+  },
+  "output_format": "plain-text",
+  "output_schema": {
+    "type": "string"
+  },
+  "tests": [
+    {
+      "name": "hello-bob",
+      "input": {
+        "user_name": "Bob"
+      },
+      "expect_exact": "Hello Bob!"
+    }
+  ]
+}
+
+
+=== output.txt ===
+
+> @yuxi-labs/gptp-core@0.1.0 gptp:execute:mock
+> cross-env MOCK=true tsx src/devtools/cli/execute.ts docs/examples/hello-world.gptp -- user_name=William
+
+[dotenv@17.2.1] injecting env (1) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+2025-08-16T12:00:12.815Z [GPTP][INFO][[schema] 📡 Fetching schema from: https://raw.githubusercontent.com/Yuxi-Labs/gptp/refs/tags/v1.2.0/schema/gptp.schema.json]
+2025-08-16T12:00:14.805Z [GPTP][INFO][[schema] ✅ Remote schema loaded successfully. Caching...]
+=== Model Output ===
+
+[Mocked response] Received 2 messages. Model: gpt-4
+
+
+=== package.json ===
+{
+  "name": "@yuxi-labs/gptp-core",
+  "version": "0.1.0",
+  "description": "Core validation, formatting and execution logic for the GPTP file format.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "rimraf dist && tsc",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "dev": "tsx src/index.ts",
+    "dev:debug": "cross-env GPTP_DEBUG=true tsx src/index.ts",
+    "gptp:execute": "tsx src/devtools/cli/execute.ts",
+    "gptp:execute:mock": "cross-env MOCK=true tsx src/devtools/cli/execute.ts",
+    "gptp:format": "tsx src/devtools/cli/format.ts",
+    "gptp:diff": "tsx src/devtools/cli/diff.ts",
+    "gptp:init": "tsx src/devtools/cli/init.ts",
+    "gptp:migrate": "tsx src/devtools/cli/migrate.ts",
+    "gptp:convert": "tsx src/devtools/cli/convert.ts",
+    "print:codebase": "tsx src/devtools/capture/printCodebase.ts"
+
+  },
+  "keywords": [
+    "gptp",
+    "prompt",
+    "file-format",
+    "validation",
+    "execution",
+    "vscode-extension",
+    "sdk"
+  ],
+  "author": "William Sawyerr",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Yuxi-Labs/gptp-core"
+  },
+  "bugs": {
+    "url": "https://github.com/Yuxi-Labs/gptp-core/issues"
+  },
+  "homepage": "https://github.com/Yuxi-Labs/gptp-core",
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/lodash-es": "^4.17.12",
+    "@types/node": "^20.0.0",
+    "cross-env": "^10.0.0",
+    "dotenv": "^17.2.1",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "rimraf": "^5.0.10",
+    "tsx": "^4.7.0",
+    "typescript": "^5.0.0",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^2.1.1",
+    "ajv-keywords": "^5.1.0",
+    "chalk": "^5.5.0",
+    "lodash-es": "^4.17.21",
+    "node-fetch": "^3.3.2"
+  }
+}
+
+
+=== raw.json ===
+'{"foo": "bar", "baz": [1, 2, 3]}' 
+
+
+=== README.md ===
+# GPTP Core
+
+<p>
+  <!-- Build status -->
+  <img src="https://img.shields.io/github/actions/workflow/status/Yuxi-Labs/gptp-core/continuous-integration.yml?branch=release%2Fv0.1.0" alt="Build Status" />
+
+  <!-- Latest Release -->
+  <img src="https://img.shields.io/github/v/release/Yuxi-Labs/gptp-core?include_prereleases&sort=semver" alt="Latest Release" />
+
+  <!-- Open Issues -->
+  <img src="https://img.shields.io/github/issues/Yuxi-Labs/gptp-core" alt="Open Issues" />
+
+  <!-- Pull Requests -->
+  <img src="https://img.shields.io/github/issues-pr/Yuxi-Labs/gptp-core" alt="Pull Requests" />
+
+  <!-- Last Commit -->
+  <img src="https://img.shields.io/github/last-commit/Yuxi-Labs/gptp-core" alt="Last Commit" />
+
+  <!-- Contributors -->
+  <img src="https://img.shields.io/github/contributors/Yuxi-Labs/gptp-core" alt="Contributors" />
+
+  <!-- License -->
+  <img src="https://img.shields.io/badge/License-MIT-orange.svg" alt="License: MIT" />
+</p>
+
+Core SDK for working with **GPTP** (Generative Prompt Template Package) files.  
+Provides validation, normalization, execution, and developer tooling for the GPTP file format.  
+Designed to be reusable by:
+
+- **CLI tools** (e.g., `gptp-cli`)
+- **VS Code extensions**
+- **SDK wrappers** (Python, web, etc.)
+- **Custom prompt runners and editors**
+
+---
+
+## ✨ Features
+
+- **Schema Validation**  
+  Validates `.gptp` files against the official GPTP JSON Schema (v1.2.0)  
+  Always prioritizes the remote schema; falls back to local cache only if remote is unavailable.
+
+- **Prompt Normalization**  
+  Ensures prompts are well-formed and ready for execution.
+
+- **Execution Engine**  
+  Runs GPTP files by resolving variables, injecting context, and calling AI providers.
+
+- **Migration Tools**  
+  Upgrade `.gptp` files between schema versions.
+
+- **Diffing**  
+  Compare two GPTP files and see changes in variables, messages, and metadata.
+
+- **Pluggable**  
+  Hook in custom providers, formatters, or preprocessors.
+
+---
+
+## 📦 Installation
+
+```sh
+npm install @yuxi-labs/gptp-core
+````
+
+---
+
+## 🗂 Project Structure
+
+```plaintext
+src/
+  engine/        # Core reusable functionality
+    diff/        # Compare GPTP files
+    execute/     # Run GPTP files
+    format/      # Format prompts
+    fs/          # Filesystem helpers
+    inspect/     # Inspect GPTP files
+    migrate/     # Upgrade GPTP files
+    normalize/   # Normalize prompt structure
+    parse/       # Parse GPTP JSON
+    profile/     # Profile loading/resolution
+    schema/      # Load schema from remote or cache
+    utils/       # Environment + logging helpers
+    validate/    # Validate GPTP files
+  devtools/      # Developer helper scripts
+  plugins/       # Plugin hooks (future)
+  types/         # Shared TypeScript types
+```
+
+---
+
+## 🚀 Quick Start
+
+```ts
+import { loadSchema } from './engine/schema/loadSchema.js';
+import { validatePrompt } from './engine/validate/validatePrompt.js';
+import { parsePrompt } from './engine/parse/index.js';
+import fs from 'node:fs/promises';
+
+async function main() {
+  const schema = await loadSchema();
+
+  const raw = await fs.readFile('./docs/examples/hello-world.gptp', 'utf8');
+  const prompt = parsePrompt(raw);
+
+  const { valid, errors } = validatePrompt(prompt, schema);
+
+  if (!valid) {
+    console.error('Prompt failed validation:', errors);
+    process.exit(1);
+  }
+
+  console.log('✅ Prompt is valid!');
+}
+
+main().catch(console.error);
+```
+
+---
+
+## 🔍 Validation Policy
+
+* **Always fetch schema from remote first** (URL in `GPTP_SCHEMA_URL` env var)
+* If remote fails but a local cache exists at `.gptp/cache/gptp.schema.json`, use that
+* If neither remote nor cache are available, **fail immediately** with a clear error message
+* Never run without a valid schema
+
+---
+
+## ⚙️ Environment Variables
+
+| Variable          | Description                                  | Required |
+| ----------------- | -------------------------------------------- | -------- |
+| `GPTP_SCHEMA_URL` | URL to the GPTP JSON Schema                  | ✅        |
+| `GPTP_DEBUG`      | Enable verbose debug logs (`true` / `false`) | ❌        |
+
+---
+
+## 🧪 Development
+
+### Install dependencies
+
+```sh
+npm install
+```
+
+### Run tests
+
+```sh
+npm test
+```
+
+### Run in dev mode
+
+```sh
+npm run dev
+```
+
+### Run with debug logs
+
+```sh
+npm run dev:debug
+```
+
+---
+
+## 📜 License
+
+MIT © [Yuxi Labs](https://github.com/Yuxi-Labs)
+
+=== src\api\engine.ts ===
+export { parsePrompt } from './parse'
+export { normalizePrompt } from './normalize'
+export { executePrompt } from './execute'
+export { formatPrompt } from './format'
+export { loadProfile } from './profile'
+
+
+=== src\api\gptp.ts ===
+// Re-export core types
+export * from './types';
+
+// Core functionality
+export { diffPromptKeys, diffPromptDeep } from './engine/diff';
+export { executePrompt } from './engine/execute';
+export { formatPrompt } from './engine/format';
+export { writeGptpFile } from './engine/fs';
+export { inspectPrompt } from './engine/inspect';
+export { migratePrompt } from './engine/migrate';
+export { normalizePrompt } from './engine/normalize';
+export { parsePrompt } from './engine/parse';
+export { loadProfile } from './engine/profile';
+export { loadSchema } from './engine/schema/loadSchema';
+export { validatePrompt } from './engine/validate/validatePrompt';
+
+
+
+
+=== src\devtools\capture\printCodebase.ts ===
+// src/devtools/capture/printCodebase.ts
+//
+// Dump every non-ignored file in the repo to stdout **or** a single text file.
+//
+// • Skips dot-files / dot-dirs automatically.
+// • Obeys .gitignore rules (plus some hard-coded extras).
+// • Accepts BOTH “--out file.txt” and “--out=file.txt”.
+
+import fs from 'fs/promises'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import ignore, { Ignore } from 'ignore'
+
+/* ------------------------------------------------------------------ */
+/*  Paths & constants                                                 */
+/* ------------------------------------------------------------------ */
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname  = path.dirname(__filename)
+const ROOT       = path.resolve(__dirname, '../../..')
+
+/* ------------------------------------------------------------------ */
+/*  CLI flag parsing (--out file OR --out=file)                       */
+/* ------------------------------------------------------------------ */
+
+let OUTPUT_FILE: string | null = null
+for (let i = 2; i < process.argv.length; i++) {
+    const arg = process.argv[i]
+
+    // --out file.txt  ↴
+    if (arg === '--out' && process.argv[i + 1]) {
+        OUTPUT_FILE = path.resolve(ROOT, process.argv[i + 1])
+        break
+    }
+
+    // --out=file.txt  ↴
+    if (arg.startsWith('--out=')) {
+        OUTPUT_FILE = path.resolve(
+            ROOT,
+            arg.slice('--out='.length) || 'codebase.txt'
+        )
+        break
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Initialise ignore instance                                        */
+/* ------------------------------------------------------------------ */
+
+const ig: Ignore = ignore()
+
+async function loadGitignore(): Promise<void> {
+    try {
+        const raw = await fs.readFile(path.join(ROOT, '.gitignore'), 'utf8')
+        ig.add(raw)
+    } catch {
+        console.warn('⚠️  No .gitignore found or it could not be read')
+    }
+
+    /* Always-skip list */
+    ig.add([
+        '.git/',
+        '.idea/',
+        '.vscode/',
+        'node_modules/',
+        'dist/',
+        '*.log',
+        'package-lock.json',
+    ])
+}
+
+/* ------------------------------------------------------------------ */
+/*  Recursive file walk                                               */
+/* ------------------------------------------------------------------ */
+
+async function walk(dir: string): Promise<string[]> {
+    const entries = await fs.readdir(dir, { withFileTypes: true })
+    const files: string[] = []
+
+    for (const entry of entries) {
+        /* Skip dot-files / dot-dirs immediately */
+        if (entry.name.startsWith('.')) continue
+
+        const abs  = path.join(dir, entry.name)
+        const rel  = path.relative(ROOT, abs)
+        const posixRel = rel.split(path.sep).join(path.posix.sep)
+
+        /* Trailing “/” for dirs so patterns like node_modules/ match */
+        const testPath = entry.isDirectory() ? `${posixRel}/` : posixRel
+        if (ig.ignores(testPath)) continue
+
+        if (entry.isDirectory()) {
+            files.push(...(await walk(abs)))
+        } else {
+            files.push(abs)
+        }
+    }
+
+    return files
+}
+
+/* ------------------------------------------------------------------ */
+/*  Dump gathered files                                               */
+/* ------------------------------------------------------------------ */
+
+async function dump(files: string[]): Promise<void> {
+    const chunks: string[] = []
+
+    for (const file of files) {
+        const rel = path.relative(ROOT, file)
+        let text: string
+
+        try {
+            text = await fs.readFile(file, 'utf8')
+        } catch {
+            text = '[Failed to read file]'
+        }
+
+        chunks.push(`\n=== ${rel} ===\n${text}`)
+    }
+
+    const output = chunks.join('\n')
+
+    if (OUTPUT_FILE) {
+        await fs.writeFile(OUTPUT_FILE, output, 'utf8')
+        console.log(`✅ Codebase written to ${OUTPUT_FILE}`)
+    } else {
+        console.log(output)
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Main                                                              */
+/* ------------------------------------------------------------------ */
+
+async function main() {
+    await loadGitignore()
+    const files = await walk(ROOT)
+    await dump(files)
+}
+
+main().catch(err => {
+    console.error('❌ Failed to print codebase:', err)
+    process.exit(1)
+})
+
+
+=== src\devtools\cli\bin\gptp.ts ===
+
+
+=== src\devtools\cli\convert.ts ===
+import fs from 'fs/promises'
+import path from 'path'
+import { parsePrompt } from '../../engine/parse'
+import { convertToFormat } from '../../engine/convert/convertToFormat'
+import { convertFromFormat } from '../../engine/convert/convertFromFormat'
+
+function parseFlags(args: string[]) {
+    const flags: Record<string, string> = {}
+    for (const arg of args) {
+        const [key, value] = arg.split('=')
+        if (key?.startsWith('--') && value !== undefined) {
+            flags[key.slice(2)] = value
+        }
+    }
+    return flags
+}
+
+async function run() {
+    const [, , inputFile, ...restArgs] = process.argv
+
+    if (!inputFile) {
+        console.error('Usage: gptp convert <file> --to=format [--out=outfile]')
+        process.exit(1)
+    }
+
+    const flags = parseFlags(restArgs)
+
+    const to = flags.to
+    const out = flags.out
+
+    if (!to) {
+        console.error('❌ Missing --to flag. Please specify a target format.')
+        process.exit(1)
+    }
+
+    const absInput = path.resolve(inputFile)
+    const inputRaw = await fs.readFile(absInput, 'utf-8')
+
+    let converted: string
+
+    try {
+        if (path.extname(inputFile) === '.gptp') {
+            const parsed = await parsePrompt(absInput)
+            converted = convertToFormat(parsed, to)
+        } else {
+            converted = convertFromFormat(inputRaw, to)
+        }
+    } catch (err: any) {
+        console.error(`❌ Failed to convert: ${err.message}`)
+        process.exit(1)
+    }
+
+    if (out) {
+        const absOut = path.resolve(out)
+        await fs.writeFile(absOut, converted, 'utf-8')
+        console.log(`✅ Converted file saved to ${out}`)
+    } else {
+        console.log(converted)
+    }
+}
+
+run()
+
+
+=== src\devtools\cli\diff.ts ===
+// src/devtools/cli/diff.ts
+
+import { diffPromptKeys, diffPromptDeep } from '../../engine/diff'
+import { parsePrompt } from '../../engine/parse'
+import path from 'path'
+
+async function main() {
+    const [,, fileA, fileB, ...flags] = process.argv
+
+    if (!fileA || !fileB) {
+        console.error('Usage: gptp diff <fileA.gptp> <fileB.gptp> [--deep]')
+        process.exit(1)
+    }
+
+    const promptA = await parsePrompt(path.resolve(fileA))
+    const promptB = await parsePrompt(path.resolve(fileB))
+
+    const isDeep = flags.includes('--deep')
+
+    if (isDeep) {
+        const deep = diffPromptDeep(promptA, promptB)
+        if (Object.keys(deep).length === 0) {
+            console.log('✅ No differences found.')
+        } else {
+            console.log('🔍 Deep differences:')
+            for (const key in deep) {
+                const { from, to } = deep[key]
+                console.log(`\n  🔑 ${key} changed:`)
+                console.log(`    - from: ${JSON.stringify(from, null, 2)}`)
+                console.log(`    + to:   ${JSON.stringify(to, null, 2)}`)
+            }
+        }
+    } else {
+        const shallow = diffPromptKeys(promptA, promptB)
+        if (shallow.length === 0) {
+            console.log('✅ No differences at top level.')
+        } else {
+            console.log('🧩 Changed keys:', shallow.join(', '))
+        }
+    }
+}
+
+main().catch(err => {
+    console.error('❌ Error during diff:', err)
+    process.exit(1)
+})
+
+
+=== src\devtools\cli\execute.ts ===
+import path from 'path'
+import {
+    parsePrompt,
+    normalizePrompt,
+    executePrompt,
+    formatPrompt,
+    loadProfile,
+} from '../../engine'
+
+import { loadEnvFile } from '../../engine/utils/env'
+import { validatePrompt } from '../../engine/validate/validatePrompt'
+import { loadSchema } from '../../engine/schema/loadSchema'
+import type { GptpPrompt } from '../../types'
+
+loadEnvFile()
+
+function parseInputArgs(args: string[]): Record<string, any> {
+    const input: Record<string, any> = {}
+
+    for (const arg of args) {
+        const [key, value] = arg.split('=')
+        if (key && value !== undefined) {
+            input[key] = value
+        }
+    }
+
+    return input
+}
+
+function validateRequiredInputs(prompt: GptpPrompt, input: Record<string, any>) {
+    const variables = prompt.variables || {}
+
+    for (const [key, def] of Object.entries(variables)) {
+        if (def.required && input[key] === undefined) {
+            console.error(`❌ Missing required input: "${key}"`)
+            process.exit(1)
+        }
+    }
+}
+
+export async function run(): Promise<void> {
+    const [, , filePath, ...restArgs] = process.argv
+
+    if (!filePath) {
+        console.error('Usage: gptp execute <prompt.gptp> [key=value ...]')
+        process.exit(1)
+    }
+
+    const absPath = path.resolve(filePath)
+    const input = parseInputArgs(restArgs)
+
+    const parsedPrompt = await parsePrompt(absPath)
+
+    // 🧠 Now with validation that works
+    const schema = await loadSchema()
+    const isValid = validatePrompt(parsedPrompt, schema)
+    if (!isValid) {
+        console.error('❌ Prompt failed schema validation.')
+        process.exit(1)
+    }
+
+    const normalized: GptpPrompt = normalizePrompt(parsedPrompt)
+    validateRequiredInputs(normalized, input)
+
+    await loadProfile('default') // for future dreams and delusions
+
+    const result = await executePrompt(normalized, {
+        input,
+        run: true,
+    })
+
+    if (typeof result.modelOutput !== 'string') {
+        console.error('❌ Error: modelOutput is not a string.')
+        process.exit(1)
+    }
+
+    const output = formatPrompt(result.modelOutput, {
+        outputFormat: normalized.output_format || 'plain-text',
+        outputSchema: normalized.output_schema,
+    })
+
+    console.log('=== Model Output ===\n')
+    console.log(output)
+}
+
+run()
+
+
+=== src\devtools\cli\format.ts ===
+import fs from 'fs/promises'
+import path from 'path'
+import { formatOutput } from '../../engine/format'
+
+type FormatFlags = {
+    format?: 'plain-text' | 'markdown' | 'json' | 'html'
+    schema?: string
+}
+
+function parseFlags(args: string[]): { filePath: string; flags: FormatFlags } {
+    const [filePath, ...rest] = args
+    const flags: FormatFlags = {}
+
+    for (const arg of rest) {
+        const [key, value] = arg.split('=')
+        if (key && value !== undefined) {
+            const cleanKey = key.replace(/^--/, '')
+            if (cleanKey === 'format') flags.format = value as FormatFlags['format']
+            if (cleanKey === 'schema') flags.schema = value
+        }
+    }
+
+    return { filePath, flags }
+}
+
+async function run() {
+    const [, , ...args] = process.argv
+    const { filePath, flags } = parseFlags(args)
+
+    if (!filePath) {
+        console.error('Usage: gptp format <output.txt> [--format=json|markdown|html|plain-text] [--schema=output.schema.json]')
+        process.exit(1)
+    }
+
+    const absPath = path.resolve(filePath)
+
+    let rawText: string
+    try {
+        rawText = await fs.readFile(absPath, 'utf8')
+    } catch (err: any) {
+        console.error(`❌ Failed to read file: ${absPath}\n${err.message}`)
+        process.exit(1)
+    }
+
+    let parsedOutput: any = rawText
+    try {
+        parsedOutput = JSON.parse(rawText)
+    } catch {
+        // Raw is not JSON — treat as plain string
+    }
+
+    let outputSchema: any = undefined
+    if (flags.schema) {
+        const schemaPath = path.resolve(flags.schema)
+        try {
+            const schemaRaw = await fs.readFile(schemaPath, 'utf8')
+            outputSchema = JSON.parse(schemaRaw)
+        } catch (err: any) {
+            console.error(`❌ Failed to load schema from ${flags.schema}: ${err.message}`)
+            process.exit(1)
+        }
+    }
+
+    try {
+        const result = formatOutput(parsedOutput, {
+            outputFormat: flags.format,
+            outputSchema,
+        })
+        console.log(result)
+    } catch (err: any) {
+        console.error(`❌ Failed to format output: ${err.message}`)
+        process.exit(1)
+    }
+}
+
+run()
+
+
+=== src\devtools\cli\helpers\formatting\formatAsHtml.ts ===
+// src/devtools/cli/helpers/formatting/formatAsHtml.ts
+
+/**
+ * formatAsHtml
+ *
+ * Converts model output into a valid HTML document or fragment.
+ * This is not meant to render a full UI — it’s focused on producing safe,
+ * readable HTML from string or structured output.
+ */
+
+function escapeHtml(str: string): string {
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+}
+
+function formatJsonToHtml(obj: unknown): string {
+    const json = JSON.stringify(obj, null, 2)
+    const escaped = escapeHtml(json)
+    return `<pre><code class="json">${escaped}</code></pre>`
+}
+
+export function formatAsHtml(raw: any): string {
+    if (typeof raw === 'string') {
+        const escaped = escapeHtml(raw)
+        return `<pre><code>${escaped}</code></pre>`
+    }
+
+    if (
+        typeof raw === 'number' ||
+        typeof raw === 'boolean' ||
+        raw === null
+    ) {
+        return `<pre><code>${escapeHtml(String(raw))}</code></pre>`
+    }
+
+    if (typeof raw === 'undefined') {
+        return `<pre><code class="undefined">[undefined]</code></pre>`
+    }
+
+    try {
+        return formatJsonToHtml(raw)
+    } catch {
+        return `<pre><code class="error">[Error: Failed to stringify output]</code></pre>`
+    }
+}
+
+
+=== src\devtools\cli\helpers\formatting\formatAsJson.ts ===
+// src/devtools/cli/helpers/formatting/formatAsJson.ts
+
+/**
+ * formatAsJson
+ *
+ * Converts model output into JSON format — always valid JSON, never approximate.
+ * This formatter is for downstream systems or humans that want structured data.
+ * If the input is already an object, it is stringified.
+ * If the input is a string, it is wrapped as a JSON string value.
+ * If input is undefined, the string "null" is returned (since JSON has no undefined).
+ * Fails gracefully — never throws.
+ */
+
+export function formatAsJson(raw: any): string {
+    // Handle undefined explicitly — JSON doesn't support it
+    if (typeof raw === 'undefined') {
+        return 'null'
+    }
+
+    try {
+        // If it's an object, array, boolean, number, or null — safe to JSON.stringify
+        if (typeof raw === 'object' || typeof raw === 'number' || typeof raw === 'boolean' || raw === null) {
+            return JSON.stringify(raw, null, 2)
+        }
+
+        // If it's a string — wrap as a JSON string literal
+        if (typeof raw === 'string') {
+            return JSON.stringify(raw) // adds quotes + escapes
+        }
+
+        // Fallback for other primitive types
+        return JSON.stringify(String(raw))
+    } catch (err) {
+        return JSON.stringify({ error: 'Failed to stringify input', reason: (err as Error).message })
+    }
+}
+
+
+=== src\devtools\cli\helpers\formatting\formatAsMarkdown.ts ===
+// src/devtools/cli/helpers/formatting/formatAsMarkdown.ts
+
+/**
+ * formatAsMarkdown
+ *
+ * Converts model output into valid Markdown syntax.
+ * This is not code fencing — it is actual Markdown structure.
+ * Output depends on the type of input.
+ * - Strings: paragraphs
+ * - Objects: definition lists or code blocks
+ * - Arrays: bullet lists
+ * - Numbers/Booleans/Null: inline values
+ */
+
+function escapeMd(text: string): string {
+    return text
+        .replace(/\\/g, '\\\\')
+        .replace(/([*_`~])/g, '\\$1')
+        .replace(/^(\s*)([*+-])/gm, '$1\\$2') // escape list markers at line start
+}
+
+function formatObjectAsMarkdown(obj: Record<string, any>): string {
+    const lines: string[] = []
+
+    for (const [key, value] of Object.entries(obj)) {
+        const escapedKey = escapeMd(key)
+        const formattedVal =
+            typeof value === 'object' && value !== null
+                ? '```json\n' + JSON.stringify(value, null, 2) + '\n```'
+                : '`' + escapeMd(String(value)) + '`'
+
+        lines.push(`**${escapedKey}**: ${formattedVal}`)
+    }
+
+    return lines.join('\n\n')
+}
+
+function formatArrayAsMarkdown(arr: any[]): string {
+    return arr
+        .map((item) => {
+            if (typeof item === 'object') {
+                return '- ' + '`' + escapeMd(JSON.stringify(item)) + '`'
+            }
+            return '- ' + escapeMd(String(item))
+        })
+        .join('\n')
+}
+
+export function formatAsMarkdown(raw: any): string {
+    if (typeof raw === 'undefined') {
+        return '`[undefined]`'
+    }
+
+    if (typeof raw === 'string') {
+        return escapeMd(raw)
+    }
+
+    if (typeof raw === 'number' || typeof raw === 'boolean' || raw === null) {
+        return '`' + String(raw) + '`'
+    }
+
+    if (Array.isArray(raw)) {
+        return formatArrayAsMarkdown(raw)
+    }
+
+    if (typeof raw === 'object') {
+        return formatObjectAsMarkdown(raw)
+    }
+
+    // Fallback
+    return '`[unrecognized type]`'
+}
+
+
+=== src\devtools\cli\helpers\formatting\formatAsPlainText.ts ===
+// src/devtools/cli/helpers/formatting/formatAsPlainText.ts
+
+import chalk from 'chalk'
+
+/**
+ * formatAsPlainText
+ *
+ * Converts model output into styled plain text for terminal display.
+ * Automatically uses colors for different types, but only if running in a TTY.
+ */
+
+export function formatAsPlainText(raw: any): string {
+    const isTTY = process.stdout.isTTY
+
+    if (typeof raw === 'string') {
+        return isTTY ? chalk.white(raw) : raw
+    }
+
+    if (
+        typeof raw === 'number' ||
+        typeof raw === 'boolean' ||
+        raw === null
+    ) {
+        const base = String(raw)
+        return isTTY ? chalk.cyan(base) : base
+    }
+
+    if (typeof raw === 'undefined') {
+        return isTTY ? chalk.gray('[undefined]') : '[undefined]'
+    }
+
+    try {
+        const formatted = JSON.stringify(raw, null, 2)
+
+        if (!isTTY) return formatted
+
+        // Colorize line-by-line (basic beautification)
+        return formatted
+            .split('\n')
+            .map(line => {
+                if (/^\s*{/.test(line) || /^\s*}/.test(line)) return chalk.gray(line)
+                if (/^\s*"/.test(line)) return chalk.green(line)
+                if (/:\s*".*"/.test(line)) return chalk.white(line)
+                if (/:\s*\d/.test(line)) return chalk.cyan(line)
+                return chalk.white(line)
+            })
+            .join('\n')
+
+    } catch {
+        return isTTY ? chalk.red('[Error: Failed to stringify output]') : '[Error: Failed to stringify output]'
+    }
+}
+
+
+=== src\devtools\cli\helpers\formatting\registry.ts ===
+import { formatAsMarkdown } from './formatAsMarkdown'
+import { formatAsHtml } from './formatAsHtml'
+import { formatAsJson } from './formatAsJson'
+import { formatAsPlainText } from './formatAsPlainText'
+
+export const formatters = {
+    markdown: formatAsMarkdown,
+    html: formatAsHtml,
+    json: formatAsJson,
+    'plain-text': formatAsPlainText
+}
+
+=== src\devtools\cli\helpers\parsing\parseFlags.ts ===
+// src/devtools/cli/helpers/parseFlags.ts
+
+export type TestRunMode = "non-stop" | "stop-on-failure" | "interactive";
+
+export interface TestFlags {
+    file?: string;             // Path to a .gptp file
+    only?: string;             // Test name to focus on
+    mode?: TestRunMode;        // Control run behavior
+    snapshot?: boolean;        // Enable snapshot comparison
+    verbose?: boolean;         // Extra output
+}
+
+export function parseTestFlags(args: string[]): TestFlags {
+    const flags: TestFlags = {};
+    const consumed = new Set<number>();
+
+    for (let i = 0; i < args.length; i++) {
+        const arg = args[i];
+
+        if (arg === "--file" || arg === "-f") {
+            flags.file = args[i + 1];
+            consumed.add(i);
+            consumed.add(i + 1);
+            i++;
+        }
+
+        else if (arg === "--only") {
+            flags.only = args[i + 1];
+            consumed.add(i);
+            consumed.add(i + 1);
+            i++;
+        }
+
+        else if (arg === "--mode") {
+            const val = args[i + 1];
+            if (["non-stop", "stop-on-failure", "interactive"].includes(val)) {
+                flags.mode = val as TestRunMode;
+            } else {
+                throw new Error(`Unknown test mode: ${val}`);
+            }
+            consumed.add(i);
+            consumed.add(i + 1);
+            i++;
+        }
+
+        else if (arg === "--snapshot") {
+            flags.snapshot = true;
+            consumed.add(i);
+        }
+
+        else if (arg === "--verbose" || arg === "-v") {
+            flags.verbose = true;
+            consumed.add(i);
+        }
+    }
+
+    // Detect unknown flags
+    const unknowns = args.filter((_, i) => !consumed.has(i) && args[i].startsWith("-"));
+    if (unknowns.length > 0) {
+        throw new Error(`Unknown flag(s): ${unknowns.join(", ")}`);
+    }
+
+    return flags;
+}
+
+
+=== src\devtools\cli\init.ts ===
+import fs from 'fs/promises'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+// Resolve __dirname for ESM
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+// Scaffold template — full GPTP file structure
+const DEFAULT_PROMPT = {
+    $doctype: 'gptp',
+    schemaVersion: process.env.GPTP_SCHEMA || '1.2.0',
+    promptVersion: '1.0.0',
+    title: 'My Prompt',
+    description: 'A new prompt created with gptp init.',
+    messages: [
+        {
+            role: 'user',
+            content: 'Hello {{name}}!'
+        }
+    ],
+    variables: {
+        name: {
+            type: 'string',
+            required: true,
+            description: 'The name of the user',
+            example: 'Alice'
+        }
+    },
+    params: {
+        model: 'gpt-4',
+        temperature: 0.7
+    },
+    output_format: 'plain-text'
+}
+
+// Simple CLI flag parser: --key=value
+function parseFlags(args: string[]) {
+    const flags: Record<string, string | boolean> = {}
+    for (const arg of args) {
+        if (arg.startsWith('--')) {
+            const [key, value] = arg.slice(2).split('=')
+            flags[key] = value !== undefined ? value : true
+        }
+    }
+    return flags
+}
+
+export async function initPromptCLI() {
+    const [, , ...args] = process.argv
+    const flags = parseFlags(args)
+
+    const title = (flags.title as string) || DEFAULT_PROMPT.title
+    const description = (flags.description as string) || DEFAULT_PROMPT.description
+    const file = (flags.out as string) || 'my-prompt.gptp'
+    const overwrite = !!flags.overwrite
+
+    const prompt = {
+        ...DEFAULT_PROMPT,
+        title,
+        description
+    }
+
+    const absPath = path.resolve(file)
+
+    try {
+        await fs.access(absPath)
+        if (!overwrite) {
+            console.error(`❌ File already exists: ${file}`)
+            console.error(`   Use --overwrite to overwrite it.`)
+            process.exit(1)
+        }
+    } catch {
+        // File doesn't exist, proceed
+    }
+
+    try {
+        await fs.writeFile(absPath, JSON.stringify(prompt, null, 2), 'utf-8')
+        console.log(`✅ Created prompt at ${file}`)
+    } catch (err: any) {
+        console.error(`❌ Failed to write file: ${err.message}`)
+        process.exit(1)
+    }
+}
+
+// Run if called directly
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    initPromptCLI()
+}
+
+
+=== src\devtools\cli\migrate.ts ===
+import { parsePrompt } from '../../engine/parse'
+import { migratePrompt } from '../../engine/migrate'
+import { loadSchema } from '../../engine/schema/loadSchema'
+import { validatePrompt } from '../../engine/validate/validatePrompt'
+import fs from 'fs/promises'
+import path from 'path'
+
+function parseFlags(args: string[]): Record<string, string> {
+    const flags: Record<string, string> = {}
+    for (const arg of args) {
+        const [key, value] = arg.split('=')
+        if (key && value !== undefined) {
+            flags[key.replace(/^--/, '')] = value
+        }
+    }
+    return flags
+}
+
+export async function migratePromptCLI() {
+    const [, , filePath, ...rest] = process.argv
+
+    if (!filePath) {
+        console.error('❌ Usage: gptp migrate <file.gptp> [--out=newfile.gptp]')
+        process.exit(1)
+    }
+
+    const flags = parseFlags(rest)
+    const absPath = path.resolve(filePath)
+
+    let prompt
+    try {
+        prompt = await parsePrompt(absPath)
+    } catch (err: any) {
+        console.error(`❌ Failed to parse ${filePath}: ${err.message}`)
+        process.exit(1)
+    }
+
+    if (prompt.schemaVersion === '1.2.0') {
+        console.log('✅ Prompt is already at schema version 1.2.0 — no migration needed.')
+        process.exit(0)
+    }
+
+    const migrated = migratePrompt(prompt)
+
+    // Schema validation after migration (because we like correctness, unlike your lifestyle choices)
+    let schema
+    try {
+        schema = await loadSchema()
+    } catch (err: any) {
+        console.error(`❌ Failed to load schema: ${err.message}`)
+        process.exit(1)
+    }
+
+    const result = validatePrompt(migrated, schema)
+
+    if (!result.valid) {
+        console.error('❌ Migration produced an invalid prompt. Validation errors:')
+        for (const err of result.errors || []) {
+            console.error(`  - ${err.instancePath}: ${err.message}`)
+        }
+        process.exit(1)
+    }
+
+    const output = JSON.stringify(migrated, null, 2)
+
+    if (flags.out) {
+        const outPath = path.resolve(flags.out)
+        try {
+            await fs.writeFile(outPath, output, 'utf-8')
+            console.log(`✅ Migrated prompt saved to ${flags.out}`)
+        } catch (err: any) {
+            console.error(`❌ Failed to write file: ${err.message}`)
+            process.exit(1)
+        }
+    } else {
+        console.log(output)
+    }
+}
+
+
+=== src\devtools\cli\normalize.ts ===
+import { parsePrompt } from '../../engine/parse'
+import { normalizePrompt } from '../../engine/normalize'
+import { diffPromptDeep } from '../../engine/diff'
+import fs from 'fs/promises'
+import path from 'path'
+
+function parseFlags(args: string[]): Record<string, string> {
+    const flags: Record<string, string> = {}
+    for (const arg of args) {
+        const [key, value] = arg.split('=')
+        if (key && value !== undefined) {
+            flags[key.replace(/^--/, '')] = value
+        }
+    }
+    return flags
+}
+
+export async function normalizePromptCLI() {
+    const [, , filePath, ...rest] = process.argv
+    if (!filePath) {
+        console.error('Usage: gptp normalize <file.gptp> [--out=out.gptp] [--diff]')
+        process.exit(1)
+    }
+
+    const flags = parseFlags(rest)
+    const absPath = path.resolve(filePath)
+
+    const original = await parsePrompt(absPath)
+    const normalized = normalizePrompt(original)
+
+    if (flags.diff) {
+        const diff = diffPromptDeep(original, normalized)
+        if (Object.keys(diff).length === 0) {
+            console.log('✅ Prompt is already normalized.')
+        } else {
+            console.log('🔍 Normalization changes:')
+            for (const key in diff) {
+                console.log(`\n  🔑 ${key} changed:`)
+                console.log(`    - from: ${JSON.stringify(diff[key].from, null, 2)}`)
+                console.log(`    + to:   ${JSON.stringify(diff[key].to, null, 2)}`)
+            }
+        }
+        process.exit(0)
+    }
+
+    const output = JSON.stringify(normalized, null, 2)
+
+    if (flags.out) {
+        const outPath = path.resolve(flags.out)
+        await fs.writeFile(outPath, output, 'utf-8')
+        console.log(`✅ Normalized prompt written to ${flags.out}`)
+    } else {
+        console.log(output)
+    }
+}
+
+
+=== src\devtools\cli\resolve.ts ===
+// src/devtools/cli/resolve.ts
+import path from 'path'
+import fs from 'fs/promises'
+import { parsePrompt } from '../../engine/parse'
+import { normalizePrompt } from '../../engine/normalize'
+import type { GptpPrompt } from '../../types'
+
+type Flags = {
+    out?: string
+    normalize?: 'true' | 'false'
+    keepExtends?: 'true' | 'false'
+}
+
+function parseFlags(args: string[]): Flags {
+    const flags: Flags = {}
+    for (const arg of args) {
+        const [k, v] = arg.split('=')
+        if (!k?.startsWith('--')) continue
+        const key = k.slice(2) as keyof Flags
+        ;(flags as any)[key] = v ?? 'true'
+    }
+    return flags
+}
+
+/**
+ * Deep merge:
+ * - Objects: recursive merge
+ * - Arrays: concatenate (parent first, then child)
+ * - Scalars: child overrides parent
+ */
+function deepMerge<T = any>(parent: T, child: T): T {
+    if (Array.isArray(parent) && Array.isArray(child)) {
+        return [...parent, ...child] as unknown as T
+    }
+
+    if (
+        parent &&
+        child &&
+        typeof parent === 'object' &&
+        typeof child === 'object' &&
+        !Array.isArray(parent) &&
+        !Array.isArray(child)
+    ) {
+        const out: any = { ...parent }
+        for (const key of Object.keys(child as any)) {
+            const pv = (parent as any)[key]
+            const cv = (child as any)[key]
+            out[key] = pv === undefined ? cv : deepMerge(pv, cv)
+        }
+        return out
+    }
+
+    // Scalars or mismatched types -> child wins
+    return child
+}
+
+/**
+ * Resolve a prompt file with support for `extends`.
+ * - Loads the base chain recursively
+ * - Applies deepMerge at each step (base <- child)
+ * - Removes `extends` in the final output by default
+ */
+async function resolveExtendsFromFile(
+    filePath: string,
+    seen: Set<string> = new Set()
+): Promise<{ resolved: GptpPrompt; tree: string[] }> {
+    const abs = path.resolve(filePath)
+    if (seen.has(abs)) {
+        throw new Error(`Cycle detected while resolving extends: ${abs}`)
+    }
+    seen.add(abs)
+
+    const prompt = await parsePrompt(abs)
+    const tree = [abs]
+
+    const rel = (prompt as any).extends as string | undefined
+    if (!rel) {
+        return { resolved: prompt as GptpPrompt, tree }
+    }
+
+    const basePath = path.resolve(path.dirname(abs), rel)
+    const { resolved: baseResolved, tree: baseTree } = await resolveExtendsFromFile(basePath, seen)
+
+    // Merge: base <- child
+    const merged = deepMerge<GptpPrompt>(baseResolved, prompt as GptpPrompt)
+
+    // Drop extends in merged so the result is standalone
+    delete (merged as any).extends
+
+    return { resolved: merged, tree: [...baseTree, abs] }
+}
+
+export async function resolveCLI() {
+    const [, , fileArg, ...rest] = process.argv
+    if (!fileArg) {
+        console.error('Usage: gptp resolve <file.gptp> [--out=out.gptp] [--normalize] [--keepExtends=false]')
+        process.exit(1)
+    }
+
+    const flags = parseFlags(rest)
+    const { resolved, tree } = await resolveExtendsFromFile(fileArg)
+
+    let finalPrompt: GptpPrompt = resolved
+
+    // By default we drop `extends`. If user insists, put it back (not recommended).
+    if (flags.keepExtends === 'true') {
+        // noop — resolved already had extends removed; we won't re-add since it’s ambiguous after merge.
+        // Intentionally ignored for safety.
+    }
+
+    if (flags.normalize === 'true') {
+        finalPrompt = normalizePrompt(finalPrompt)
+    }
+
+    const output = JSON.stringify(finalPrompt, null, 2)
+
+    if (flags.out) {
+        const outPath = path.resolve(flags.out)
+        await fs.writeFile(outPath, output, 'utf8')
+        console.log('✅ Resolved prompt written to', flags.out)
+        console.log('📦 Resolution chain:')
+        for (const p of tree) console.log('  -', p)
+    } else {
+        console.log(output)
+    }
+}
+
+if (require.main === module) {
+    resolveCLI().catch((err) => {
+        console.error('❌ resolve failed:', err instanceof Error ? err.message : String(err))
+        process.exit(1)
+    })
+}
+
+
+=== src\devtools\cli\test.ts ===
+import { parseTestFlags } from "./helpers/parseFlags";
+import { parsePrompt } from "../../engine/parse";
+import { normalizePrompt } from "../../engine/normalize";
+import { executePrompt } from "../../engine/execute";
+import { formatPrompt } from "../../engine/format";
+import { logger } from "../../engine/utils/logger";
+
+async function run() {
+    const args = process.argv.slice(2);
+    const flags = parseTestFlags(args);
+
+    if (!flags.file) {
+        console.error("❌ You must specify a prompt file with --file <path>");
+        process.exit(1);
+    }
+
+    let prompt;
+    try {
+        prompt = await parsePrompt(flags.file);
+    } catch (err) {
+        console.error(`❌ Failed to parse ${flags.file}:`, err);
+        process.exit(1);
+    }
+
+    const normalized = normalizePrompt(prompt);
+    const tests = normalized.tests || [];
+
+    if (tests.length === 0) {
+        console.warn("⚠️ No tests defined in this prompt.");
+        process.exit(0);
+    }
+
+    const mode = flags.mode || "non-stop";
+
+    logger.info("test", `🧪 Running ${tests.length} test(s) in ${mode} mode...\n`);
+
+    let passed = 0;
+    let failed = 0;
+
+    for (const test of tests) {
+        const name = test.name || "(unnamed)";
+        try {
+            const result = await executePrompt(normalized, {
+                input: test.input,
+                run: true,
+            });
+
+            const output = result.modelOutput;
+
+            // 🔧 FIXED LINE BELOW: formatPrompt expects format-specific params, not the whole prompt
+            const formatted = formatPrompt(output, {
+                outputFormat: normalized.params?.outputFormat,
+                outputSchema: normalized.params?.outputSchema,
+            });
+
+            const pass = matchExpectations(formatted, test);
+
+            if (pass) {
+                logger.info("test", `✅ ${name}`);
+                passed++;
+            } else {
+                logger.error("test", `❌ ${name} failed`);
+                failed++;
+
+                if (mode === "stop-on-failure") {
+                    console.error("\n🛑 Stopping on first failure.");
+                    break;
+                }
+
+                if (mode === "interactive") {
+                    const userInput = await promptContinue();
+                    if (!userInput) {
+                        console.log("🛑 Aborting remaining tests.");
+                        break;
+                    }
+                }
+            }
+        } catch (err) {
+            logger.error("test", `❌ ${name} threw an error:`, err);
+            failed++;
+
+            if (mode !== "non-stop") break;
+        }
+    }
+
+    console.log(`\n🎯 ${passed} passed, ${failed} failed`);
+    process.exit(failed === 0 ? 0 : 1);
+}
+
+function matchExpectations(output: string, test: any): boolean {
+    if (test.expect_exact) {
+        return output.trim() === test.expect_exact.trim();
+    }
+
+    if (test.expect_contains) {
+        return test.expect_contains.every((snippet: string) =>
+            output.includes(snippet)
+        );
+    }
+
+    return false;
+}
+
+async function promptContinue(): Promise<boolean> {
+    process.stdout.write("❓ Continue? [y/N] ");
+    return new Promise((resolve) => {
+        process.stdin.setEncoding("utf8");
+        process.stdin.once("data", (data) => {
+            const answer = data.toString().trim().toLowerCase();
+            resolve(answer === "y" || answer === "yes");
+        });
+    });
+}
+
+
+run();
+
+
+=== src\devtools\cli\validate.ts ===
+// src/devtools/cli/validate.ts
+
+import { parsePrompt } from "../../engine/parse";
+import { loadSchema } from "../../engine/schema/loadSchema";
+import { validatePrompt } from "../../engine/validate/validatePrompt";
+import { logger } from "../../engine/utils/logger";
+
+async function run() {
+    const args = process.argv.slice(2);
+    const fileArgIndex = args.findIndex((arg) => arg === "--file" || arg === "-f");
+
+    if (fileArgIndex === -1 || !args[fileArgIndex + 1]) {
+        console.error("❌ Usage: validate --file <path-to-prompt>");
+        process.exit(1);
+    }
+
+    const filePath = args[fileArgIndex + 1];
+
+    let prompt;
+    try {
+        prompt = await parsePrompt(filePath);
+    } catch (err) {
+        logger.error("validate", `Failed to parse ${filePath}:`, err);
+        process.exit(1);
+    }
+
+    let schema;
+    try {
+        schema = await loadSchema();
+    } catch (err) {
+        logger.error("validate", `Failed to load schema:`, err);
+        process.exit(1);
+    }
+
+    const result = validatePrompt(prompt, schema);
+
+    if (result.valid) {
+        logger.info("validate", `✅ ${filePath} is valid.`);
+        process.exit(0);
+    } else {
+        logger.error("validate", `❌ ${filePath} is invalid. Found ${result.errors?.length} error(s):`);
+        for (const err of result.errors || []) {
+            console.error(`  - ${err.instancePath}: ${err.message}`);
+        }
+        process.exit(1);
+    }
+}
+
+run();
+
+
+=== src\engine\modules\convert\convertPrompt.ts ===
+import type { GptpPrompt } from '../../types'
+
+export function convertPrompt(prompt: GptpPrompt, format: string): string {
+    switch (format) {
+        case 'prompt.md': {
+            const lines = prompt.messages.map(
+                m => `### ${m.role}\n\n${m.content}`
+            ).join('\n\n')
+
+            return `# ${prompt.title}\n\n${prompt.description}\n\n${lines}`
+        }
+
+        case 'prompt': // Humanloop style?
+        case 'agent': {
+            const lines = prompt.messages.map(m => `${m.role.toUpperCase()}: ${m.content}`)
+            return lines.join('\n\n')
+        }
+
+        default:
+            throw new Error(`Unsupported target format: ${format}`)
+    }
+}
+
+
+=== src\engine\modules\diff\diffPrompts.ts ===
+// src/engine/diff/index.ts
+
+import { isEqual } from 'lodash-es'
+import { GptpPrompt } from '../../types'
+
+/**
+ * Computes a shallow diff between two GPTP prompts.
+ * Returns a list of changed top-level keys.
+ */
+export function diffPromptKeys(a: GptpPrompt, b: GptpPrompt): string[] {
+    const keys = new Set([...Object.keys(a), ...Object.keys(b)])
+    const changed: string[] = []
+
+    for (const key of keys) {
+        const aVal = a[key as keyof GptpPrompt]
+        const bVal = b[key as keyof GptpPrompt]
+
+        if (!isEqual(aVal, bVal)) {
+            changed.push(key)
+        }
+    }
+
+    return changed
+}
+
+/**
+ * Performs a deep diff between two GPTP prompts.
+ * Returns a map of changed keys with their `from` and `to` values.
+ */
+export function diffPromptDeep(a: GptpPrompt, b: GptpPrompt): Record<string, { from: any; to: any }> {
+    const keys = new Set([...Object.keys(a), ...Object.keys(b)])
+    const diff: Record<string, { from: any; to: any }> = {}
+
+    for (const key of keys) {
+        const aVal = a[key as keyof GptpPrompt]
+        const bVal = b[key as keyof GptpPrompt]
+
+        if (!isEqual(aVal, bVal)) {
+            diff[key] = { from: aVal, to: bVal }
+        }
+    }
+
+    return diff
+}
+
+
+=== src\engine\modules\execute\executePrompt.ts ===
+// src/engine/execute/index.ts
+
+import { GptpPrompt } from '../../types'
+import { interpolateVariables } from '../utils/interpolation'
+import { callOpenAI } from './runners/openai'
+
+interface ExecutionOptions {
+    input: Record<string, any>
+    run?: boolean
+}
+
+export interface ExecutionResult {
+    resolvedMessages: { role: string; content: string }[]
+    modelOutput: string
+}
+
+/**
+ * Executes a GPTP prompt: resolves variables and optionally calls a model.
+ */
+export async function executePrompt(
+    prompt: GptpPrompt,
+    options: ExecutionOptions
+): Promise<ExecutionResult> {
+    const { input, run = false } = options
+
+    if (!prompt.messages || !Array.isArray(prompt.messages)) {
+        throw new Error('Invalid prompt: "messages" must be an array.')
+    }
+
+    const resolvedMessages = prompt.messages.map((msg) => {
+        if (typeof msg.content !== 'string') {
+            throw new Error(`Invalid message content for role "${msg.role}". Must be a string.`)
+        }
+
+        return {
+            role: msg.role,
+            content: interpolateVariables(msg.content, input),
+        }
+    })
+
+    if (!run) {
+        return {
+            resolvedMessages,
+            modelOutput: '', // dry run fallback
+        }
+    }
+
+    const aiResponse = await callOpenAI({
+        messages: resolvedMessages,
+        model: prompt.params?.model || 'gpt-4',
+        temperature: prompt.params?.temperature ?? 0.7,
+        top_p: prompt.params?.top_p ?? 1,
+        max_tokens: prompt.params?.max_tokens ?? 512,
+    })
+
+    const modelOutput =
+        aiResponse?.choices?.[0]?.message?.content ?? '[No response from model]'
+
+    return {
+        resolvedMessages,
+        modelOutput,
+    }
+}
+
+
+=== src\engine\modules\format\formatPrompt.ts ===
+// src/engine/format/index.ts
+
+import { formatters } from '../../devtools/cli/helpers/formatting/registry'
+
+type SupportedFormat = keyof typeof formatters
+
+export interface FormatOptions {
+    outputFormat?: SupportedFormat
+    outputSchema?: any
+}
+
+/**
+ * Formats the model output according to the prompt's declared output format.
+ */
+export function formatOutput(rawOutput: any, options: FormatOptions): string {
+    const { outputFormat = 'plain-text' } = options
+
+    const formatter = formatters[outputFormat]
+    if (!formatter) {
+        throw new Error(`Unsupported output format: ${outputFormat}`)
+    }
+
+    return formatter(rawOutput)
+}
+
+/**
+ * Formats the output of a prompt according to the prompt's own declared format.
+ */
+export function formatPrompt(
+    rawOutput: any,
+    prompt: { outputFormat?: SupportedFormat; outputSchema?: any }
+): string {
+    return formatOutput(rawOutput, {
+        outputFormat: prompt.outputFormat,
+        outputSchema: prompt.outputSchema,
+    })
+}
+
+
+=== src\engine\modules\init\initPrompt.ts ===
+
+
+=== src\engine\modules\inspect\inspectPrompt.ts ===
+// src/engine/inspect/index.ts
+
+export function getDeclaredVariables(prompt: any): string[] {
+    if (!prompt.variables || typeof prompt.variables !== 'object') return [];
+    return Object.keys(prompt.variables);
+}
+
+export function getRequiredVariables(prompt: any): string[] {
+    if (!prompt.variables || typeof prompt.variables !== 'object') return [];
+    return Object.entries(prompt.variables)
+        .filter(([_, def]: [string, any]) => def.required !== false)
+        .map(([key]) => key);
+}
+
+export function getMessageRoles(prompt: any): string[] {
+    if (!Array.isArray(prompt.messages)) return [];
+    const roles: string[] = prompt.messages.map((m: { role: string }) => m.role);
+    return [...new Set<string>(roles)];
+}
+
+export function summarizePrompt(prompt: any): Record<string, any> {
+    return {
+        title: prompt.title ?? prompt.name ?? '(untitled)',
+        version: prompt.promptVersion ?? prompt.version ?? '(no version)',
+        schema: prompt.schemaVersion ?? '(no schema)',
+        roles: getMessageRoles(prompt),
+        variables: getDeclaredVariables(prompt),
+        requiredVars: getRequiredVariables(prompt),
+        tags: prompt.metadata?.tags ?? [],
+    };
+}
+
+/**
+ * Inspects the structure of a prompt and returns a summary.
+ */
+export function inspectPrompt(prompt: any): Record<string, any> {
+    return summarizePrompt(prompt);
+}
+
+
+=== src\engine\modules\migrate\migratePrompt.ts ===
+import { cloneDeep } from 'lodash-es'
+
+// Future-proof wrapper
+export function migratePrompt(original: any): any {
+    const currentVersion = original?.schemaVersion ?? 'unknown'
+
+    if (currentVersion === '1.2.0') {
+        return original // No migration needed
+    }
+
+    return migrateTo120(original)
+}
+
+// Migrate from anything → 1.2.0 (because we only support one schema like cowards)
+export function migrateTo120(original: any): any {
+    const migrated = cloneDeep(original)
+
+    // === Required fields ===
+    migrated.$doctype = 'gptp'
+    migrated.schemaVersion = '1.2.0'
+
+    // === Rename legacy fields ===
+    if (migrated.version && !migrated.promptVersion) {
+        migrated.promptVersion = migrated.version
+        delete migrated.version
+    }
+
+    if (migrated.output_contract && !migrated.output_schema) {
+        migrated.output_schema = migrated.output_contract
+        delete migrated.output_contract
+    }
+
+    if (migrated.parameters && !migrated.params) {
+        migrated.params = migrated.parameters
+        delete migrated.parameters
+    }
+
+    // === Fix variables shape (legacy array → object) ===
+    if (Array.isArray(migrated.variables)) {
+        const obj: Record<string, any> = {}
+        for (const item of migrated.variables) {
+            if (item?.name) {
+                obj[item.name] = item
+            }
+        }
+        migrated.variables = obj
+    }
+
+    // === Default values (just in case someone gets lazy) ===
+    migrated.promptVersion = migrated.promptVersion || '1.0.0'
+    migrated.metadata = migrated.metadata || {}
+
+    return migrated
+}
+
+
+=== src\engine\modules\normalize\normalizePrompt.ts ===
+// src/engine/normalize/index.ts
+
+import { cloneDeep } from 'lodash-es'
+import type { GptpPrompt } from '../../types'
+
+export function normalizePrompt(input: GptpPrompt): GptpPrompt {
+    const prompt = cloneDeep(input)
+
+    // Inject system into messages if not already present
+    if (prompt.system) {
+        const hasSystemMessage = prompt.messages.some(m => m.role === 'system')
+        if (!hasSystemMessage) {
+            prompt.messages = [
+                { role: 'system', content: prompt.system },
+                ...prompt.messages
+            ]
+        }
+    }
+
+    // Default schema version if missing
+    if (!prompt.schemaVersion) {
+        prompt.schemaVersion = '1.2.0'
+    }
+
+    // Default prompt version
+    if (!prompt.promptVersion) {
+        prompt.promptVersion = '1.0.0'
+    }
+
+    // Default metadata block
+    if (!prompt.metadata) {
+        prompt.metadata = {}
+    }
+
+    return prompt
+}
+
+
+=== src\engine\modules\parse\parsePrompt.ts ===
+// src/engine/parse/index.ts
+
+import fs from 'fs/promises'
+import path from 'path'
+import type { GptpPrompt } from '../../types'
+
+export async function parsePrompt(filePath: string): Promise<GptpPrompt> {
+    const absPath = path.resolve(filePath)
+
+    let content: string
+    try {
+        content = await fs.readFile(absPath, 'utf-8')
+    } catch (err: any) {
+        throw new Error(`Failed to read file at ${absPath}: ${err.message}`)
+    }
+
+    let parsed: unknown
+    try {
+        parsed = JSON.parse(content)
+    } catch (err: any) {
+        throw new Error(`Invalid JSON in ${absPath}: ${err.message}`)
+    }
+
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        throw new Error(`Expected a top-level JSON object in ${absPath}`)
+    }
+
+    const requiredFields = ['title', 'description', 'messages']
+    for (const field of requiredFields) {
+        if (!(field in parsed)) {
+            throw new Error(`Missing required field "${field}" in ${absPath}`)
+        }
+    }
+
+    return parsed as GptpPrompt
+}
+
+
+=== src\engine\modules\validate\validatePrompt.ts ===
+// src/engine/validate/validatePrompt.ts
+
+import Ajv, { ErrorObject } from "ajv";
+import addFormats from "ajv-formats";
+
+export interface ValidationResult {
+    valid: boolean;
+    errors?: ErrorObject[] | null;
+}
+
+export function validatePrompt(prompt: unknown, schema: object): ValidationResult {
+    const ajv = new Ajv({
+        strict: true,
+        strictTypes: false,      // ✅ Fix for enum type issues
+        allowUnionTypes: true,   // ✅ Fix for schema with mixed enums
+        allErrors: true,
+    });
+
+    addFormats(ajv);
+
+    const validate = ajv.compile(schema);
+    const valid = validate(prompt);
+
+    return {
+        valid,
+        errors: validate.errors,
+    };
+}
+
+
+=== src\engine\utils\env.ts ===
+import dotenv from 'dotenv'
+
+/**
+ * Loads variables from .env file into process.env.
+ */
+export function loadEnvFile() {
+    dotenv.config()
+}
+
+/**
+ * Manually inject env vars into process.env.
+ */
+export function loadEnvVars(vars: Record<string, string>) {
+    for (const [key, value] of Object.entries(vars)) {
+        process.env[key] = value
+    }
+}
+
+/**
+ * Access env var safely. Throws if required but missing.
+ */
+export function getEnv(
+    key: string,
+    options?: { required?: boolean; default?: string }
+): string | undefined {
+    const value = process.env[key] ?? options?.default
+
+    if (options?.required && !value) {
+        throw new Error(`Missing required environment variable: ${key}`)
+    }
+
+    return value
+}
+
+
+=== src\engine\utils\fileLoader.ts ===
+// src/engine/fs/index.ts
+
+import fs from 'fs'
+import path from 'path'
+
+const GPTP_EXTENSION = '.gptp'
+
+export function isGptpFile(filePath: string): boolean {
+    return path.extname(filePath) === GPTP_EXTENSION
+}
+
+export function readGptpFile(filePath: string): unknown {
+    if (!fs.existsSync(filePath)) {
+        throw new Error(`GPTP file not found: ${filePath}`)
+    }
+
+    if (!isGptpFile(filePath)) {
+        throw new Error(`Expected a .gptp file: ${filePath}`)
+    }
+
+    const raw = fs.readFileSync(filePath, 'utf8')
+    try {
+        return JSON.parse(raw)
+    } catch (err) {
+        throw new Error(`Invalid JSON in ${filePath}: ${(err as Error).message}`)
+    }
+}
+
+export function writeGptpFile(filePath: string, data: unknown): void {
+    if (!isGptpFile(filePath)) {
+        throw new Error(`Expected a .gptp file: ${filePath}`)
+    }
+
+    const formatted = JSON.stringify(data, null, 2)
+    fs.writeFileSync(filePath, formatted, 'utf8')
+}
+
+
+=== src\engine\utils\interpolation.ts ===
+/**
+ * interpolation.ts
+ * Simple variable interpolation utility for GPTP string templates.
+ * Replaces {{variable}} with values from context.
+ */
+
+/**
+ * Interpolates a single string.
+ */
+export function interpolate(template: string, context: Record<string, unknown>): string {
+    return template.replace(/{{\s*([\w\d_-]+)\s*}}/g, (match, key) => {
+        const value = context[key]
+        return value !== undefined ? String(value) : match
+    })
+}
+
+/**
+ * Recursively interpolates values inside strings, arrays, and objects.
+ * This is the full-fat version.
+ */
+export function interpolateVariables<T>(input: T, context: Record<string, unknown>): T {
+    if (typeof input === 'string') {
+        return interpolate(input, context) as T
+    }
+
+    if (Array.isArray(input)) {
+        return input.map((item) => interpolateVariables(item, context)) as T
+    }
+
+    if (input && typeof input === 'object') {
+        const result: any = {}
+        for (const key in input) {
+            result[key] = interpolateVariables((input as any)[key], context)
+        }
+        return result
+    }
+
+    return input
+}
+
+
+=== src\engine\utils\logger.ts ===
+/**
+ * logger.ts
+ * Lightweight logging utility with levels and tagging support.
+ */
+
+type LogLevel = "info" | "warn" | "error" | "debug";
+
+const ENABLE_DEBUG = process.env.GPTP_DEBUG === "1" || process.env.GPTP_DEBUG === "true";
+
+function log(level: LogLevel, tag: string, ...messages: any[]) {
+    const timestamp = new Date().toISOString();
+    const prefix = `[GPTP][${level.toUpperCase()}][${tag}]`;
+
+    if (level === "debug" && !ENABLE_DEBUG) return;
+
+    const output = `${timestamp} ${prefix}`;
+    const args = [output, ...messages];
+
+    switch (level) {
+        case "info":
+            console.log(...args);
+            break;
+        case "warn":
+            console.warn(...args);
+            break;
+        case "error":
+            console.error(...args);
+            break;
+        case "debug":
+            console.debug(...args);
+            break;
+    }
+}
+
+export const logger = {
+    info: (tag: string, ...msg: any[]) => log("info", tag, ...msg),
+    warn: (tag: string, ...msg: any[]) => log("warn", tag, ...msg),
+    error: (tag: string, ...msg: any[]) => log("error", tag, ...msg),
+    debug: (tag: string, ...msg: any[]) => log("debug", tag, ...msg),
+};
+
+
+=== src\engine\utils\profiles.ts ===
+// src/engine/profile/index.ts
+
+import path from 'path';
+import fs from 'fs/promises';
+import { loadEnvVars } from '../utils/env';
+
+export type GptpProfile = {
+    name: string;
+    env?: Record<string, string>;
+    defaults?: {
+        model?: string;
+        temperature?: number;
+        [key: string]: unknown;
+    };
+};
+
+/**
+ * Loads a .gptp profile by name from `.gptp/profiles/{name}.json`.
+ * Loads environment variables into process.env if defined.
+ */
+export async function loadProfile(name: string = 'default'): Promise<GptpProfile> {
+    const profilePath = path.resolve('.gptp', 'profiles', `${name}.json`);
+
+    let raw: string;
+    try {
+        raw = await fs.readFile(profilePath, 'utf-8');
+    } catch (err: any) {
+        throw new Error(`Unable to load profile "${name}": ${err.message}`);
+    }
+
+    let parsed: unknown;
+    try {
+        parsed = JSON.parse(raw);
+    } catch (err: any) {
+        throw new Error(`Profile "${name}" contains invalid JSON`);
+    }
+
+    const profile = parsed as GptpProfile;
+
+    if (profile.env) {
+        loadEnvVars(profile.env);
+    }
+
+    return {
+        ...profile,
+        name, // Ensure the passed-in name always wins
+    };
+}
+
+
+=== src\engine\utils\schemaLoader.ts ===
+// src/engine/schema/loadSchema.ts
+
+import fs from 'fs/promises';
+import path from 'path';
+import { getEnv } from '../utils/env';
+import { logger } from '../utils/logger';
+
+const CACHE_PATH = path.resolve('.gptp/cache/gptp.schema.json');
+
+// Load schema from remote (preferred), fallback to cache only if remote fails
+export async function schemaLoader(): Promise<object> {
+    const remoteUrl = getEnv('GPTP_SCHEMA_URL');
+    if (!remoteUrl) {
+        logger.error('[schema] ❌ GPTP_SCHEMA_URL not set');
+        throw new Error('GPTP_SCHEMA_URL not defined in environment');
+    }
+
+    logger.info(`[schema] 📡 Fetching schema from: ${remoteUrl}`);
+
+    try {
+        const response = await fetch(remoteUrl, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status} ${response.statusText}`);
+
+        const schema = await response.json();
+        logger.info('[schema] ✅ Remote schema loaded successfully. Caching...');
+        await fs.mkdir(path.dirname(CACHE_PATH), { recursive: true });
+        await fs.writeFile(CACHE_PATH, JSON.stringify(schema, null, 2), 'utf8');
+        return schema;
+    } catch (err) {
+        logger.warn(`[schema] ⚠️ Remote fetch failed: ${err instanceof Error ? err.message : String(err)}`);
+        logger.info('[schema] 🔁 Attempting to load cached schema instead...');
+
+        try {
+            const cached = await fs.readFile(CACHE_PATH, 'utf8');
+            logger.warn('[schema] ⚠️ Using cached schema — remote is unreachable');
+            return JSON.parse(cached);
+        } catch (cacheErr) {
+            logger.error('[schema] ❌ No cached schema available. Cannot continue.');
+            throw new Error('Failed to load schema: Remote unreachable and no local cache present.');
+        }
+    }
+}
+
+
+=== src\providers\anthropic\anthropicRunner.ts ===
+
+
+=== src\providers\anthropic\transformAnthropicRunner.ts ===
+
+
+=== src\providers\cohere\cohereRunner.ts ===
+
+
+=== src\providers\cohere\transformCohereResponse.ts ===
+
+
+=== src\providers\local\localRunner.ts ===
+
+
+=== src\providers\local\transformLocalResponse.ts ===
+
+
+=== src\providers\meta\metaLlamaRunner.ts ===
+
+
+=== src\providers\meta\transformMetaLlamaResponse.ts ===
+
+
+=== src\providers\microsoft\microsoftAzureOpenaiRunner.ts ===
+
+
+=== src\providers\microsoft\transformMicrosoftAzureOpenaiRunner.ts ===
+
+
+=== src\providers\mistral\mistralRunner.ts ===
+
+
+=== src\providers\mistral\transformMistralResponse.ts ===
+
+
+=== src\providers\openai\openaiRunner.ts ===
+// src/engine/execute/runners/openai.ts
+
+export async function callOpenAI(opts: {
+    messages: { role: string; content: string }[]
+    model: string
+    temperature: number
+    top_p: number
+    max_tokens: number
+}): Promise<{
+    choices: {
+        message: {
+            role: 'assistant'
+            content: string
+        }
+    }[]
+}> {
+    if (process.env.MOCK === 'true') {
+        return {
+            choices: [
+                {
+                    message: {
+                        role: 'assistant',
+                        content: `[Mocked response] Received ${opts.messages.length} messages. Model: ${opts.model}`,
+                    },
+                },
+            ],
+        }
+    }
+
+    // 👇 This is your placeholder for the real API call
+    throw new Error('Real OpenAI API call not implemented yet.')
+}
+
+
+=== src\providers\openai\transformOpenaiResponse.ts ===
+
+
+=== src\types\gptpTypes.ts ===
+// src/types/index.ts
+
+export interface GptpVariable {
+    type: string;
+    description?: string;
+    required?: boolean;
+    example?: any;
+    enum?: string[];
+}
+
+export interface GptpMetadata {
+    tags?: string[];
+    created_by?: string;
+    created_at?: string;
+    model_compatibility?: string[];
+    [key: string]: any;
+}
+
+export interface GptpTest {
+    name?: string;
+    input: Record<string, any>;
+    expect?: any;
+    expect_contains?: string[];
+    expect_exact?: string;
+}
+
+export interface GptpVisionInput {
+    name: string;
+    media_type: string;
+    description?: string;
+}
+
+export interface GptpPrompt {
+    $doctype: 'gptp';
+    schemaVersion: string;
+    promptVersion: string;
+    title: string;
+    description: string;
+    system?: string;
+    variables?: Record<string, GptpVariable>;
+    metadata?: GptpMetadata;
+    rendering?: {
+        style?: 'chat' | 'single-shot' | 'template';
+        instructions_position?: 'top' | 'inline' | 'none';
+    };
+    params?: {
+        model?: string;
+        temperature?: number;
+        top_p?: number;
+        max_tokens?: number;
+        stop?: string[];
+        [key: string]: any;
+    };
+    messages: Array<{
+        role: 'system' | 'user' | 'assistant';
+        content: string;
+    }>;
+    output_format?: 'markdown' | 'json' | 'plain-text' | 'html';
+    output_schema?: Record<string, any>;
+    connections?: Record<string, any>;
+    secrets?: string[];
+    assets?: Array<{
+        path: string;
+        media_type: string;
+        purpose?: string;
+        description?: string;
+    }>;
+    tools?: Array<any>;
+    vision?: {
+        allow_images: boolean;
+        inputs: GptpVisionInput[];
+    };
+    tests?: GptpTest[];
+    extends?: string;
+}
+
+
+=== src\__tests__\utils\env.test.ts ===
+
+
+=== src\__tests__\utils\fileLoader.test.ts ===
+
+
+=== src\__tests__\utils\interpolation.test.ts ===
+
+
+=== src\__tests__\utils\logger.test.ts ===
+
+
+=== src\__tests__\utils\profiles.test.ts ===
+
+
+=== src\__tests__\utils\schemaLoader.test.ts ===
+
+
+=== tsconfig.json ===
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "Node",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "moduleDetection": "force",
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "types": ["vitest"]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "tests"]
+}
+
+
+=== vitest.config.ts ===
+// vitest.config.ts
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+    test: {
+        include: ['tests/**/*.test.ts']
+    }
+})
