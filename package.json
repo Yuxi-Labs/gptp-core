@@ -28,7 +28,11 @@
     "gptp:execute:mock": "cross-env MOCK=true tsx src/devtools/cli/execute.ts",
     "gptp:format": "tsx src/devtools/cli/format.ts",
     "gptp:diff": "tsx src/devtools/cli/diff.ts",
-    "gptp:init": "tsx src/devtools/cli/init.ts"
+    "gptp:init": "tsx src/devtools/cli/init.ts",
+    "gptp:migrate": "tsx src/devtools/cli/migrate.ts",
+    "gptp:convert": "tsx src/devtools/cli/convert.ts",
+    "print:codebase": "tsx src/devtools/capture/printCodebase.ts"
+
   },
   "keywords": [
     "gptp",
