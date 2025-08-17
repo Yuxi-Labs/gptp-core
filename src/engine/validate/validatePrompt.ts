@@ -4,6 +4,7 @@ import Ajv, { ErrorObject } from "ajv";
 import addFormats from "ajv-formats";
 import { GPTPDocument, GPTPMessage } from "@/types/gptpTypes";
 import { schemaLoader } from "@/utils/schemaLoader";
+import type { ValidateFunction } from "ajv";
 
 export interface ValidationResult {
     valid: boolean;
@@ -19,14 +20,29 @@ const ajv = new Ajv({
 });
 addFormats(ajv);
 
+// 🔁 Cache compiled validator
+let validateFn: ValidateFunction | null = null;
+
+async function getValidator(): Promise<Ajv.ValidateFunction> {
+    if (validateFn) return validateFn;
+
+    const schema = await schemaLoader();
+
+    // 🧼 Remove $id to avoid duplicate registration errors
+    if (typeof schema === 'object' && schema !== null && '$id' in schema) {
+        delete (schema as any)['$id'];
+    }
+
+    validateFn = ajv.compile(schema);
+    return validateFn;
+}
+
 /**
- * Run domain-level validation checks that go beyond the schema.
- * These rules enforce things like minimum message content, roles, etc.
+ * Run domain-level validation checks
  */
 function runSemanticChecks(doc: GPTPDocument): ErrorObject[] {
     const errors: ErrorObject[] = [];
 
-    // 1. Ensure messages exist
     if (!Array.isArray(doc.messages) || doc.messages.length === 0) {
         errors.push({
             instancePath: "/messages",
@@ -37,7 +53,6 @@ function runSemanticChecks(doc: GPTPDocument): ErrorObject[] {
         });
     }
 
-    // 2. Check message structure
     doc.messages?.forEach((msg: GPTPMessage, index: number) => {
         if (!["user", "assistant", "system"].includes(msg.role)) {
             errors.push({
@@ -60,7 +75,6 @@ function runSemanticChecks(doc: GPTPDocument): ErrorObject[] {
         }
     });
 
-    // 3. Validate variables
     if (doc.variables) {
         for (const [name, variable] of Object.entries(doc.variables)) {
             if (!variable.type) {
@@ -75,17 +89,14 @@ function runSemanticChecks(doc: GPTPDocument): ErrorObject[] {
         }
     }
 
-    // Optional: add more business logic checks here...
-
     return errors;
 }
 
 /**
- * Validates a GPTPDocument against the official schema *and* semantic rules.
+ * Validates a GPTPDocument against schema + semantic rules.
  */
 export async function validatePrompt(prompt: GPTPDocument): Promise<ValidationResult> {
-    const schema = await schemaLoader();
-    const validate = ajv.compile(schema);
+    const validate = await getValidator();
 
     const isSchemaValid = validate(prompt);
     const schemaErrors = validate.errors ?? [];

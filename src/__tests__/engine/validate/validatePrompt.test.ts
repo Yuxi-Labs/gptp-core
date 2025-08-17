@@ -3,11 +3,13 @@
 import { describe, it, expect, beforeAll } from 'vitest'
 import fs from 'fs/promises'
 import path from 'path'
+import 'dotenv/config'
+
 
 import { validatePrompt } from '@/engine/validate/validatePrompt'
 import { GPTPDocument } from '@/types/gptpTypes'
 
-const FIXTURE_PATH = path.resolve('src/__tests__/fixtures/valid/valid-validate.gptp')
+const FIXTURE_PATH = path.resolve('src/__tests__/fixtures/validate/valid/valid-validate.gptp')
 
 describe('validatePrompt (FULL validation - valid prompt)', () => {
     let prompt: GPTPDocument
@@ -20,7 +22,7 @@ describe('validatePrompt (FULL validation - valid prompt)', () => {
     it('should validate without errors', async () => {
         const result = await validatePrompt(prompt)
         expect(result.valid).toBe(true)
-        expect(result.errors).toBeNull() // ← Adjust to [] if you're using array instead
+        expect(result.errors).toEqual([])
         expect(result.data).toBeDefined()
     })
 
