@@ -13,22 +13,19 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "types": [
-      "vitest"
-    ],
+    "types": ["vitest"],
     "baseUrl": "./src",
     "paths": {
-      "@/*": [
-        "*"
-      ]
-    },
-    "include": [
-      "src",
-      "**/*.test.ts"
-    ],
-    "exclude": [
-      "node_modules",
-      "dist"
-    ]
-  }
+      "@/*": ["*"]
+    }
+  },
+  "include": [
+    "src",
+    "vitest.config.ts",
+    "**/*.test.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
