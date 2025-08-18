@@ -1,6 +1,6 @@
 export interface GPTPDocument {
     $doctype: 'gptp' | 'GPTP';
-    schemaVersion: '1.2.0';
+    schemaVersion: string;
     promptVersion: string;
     title: string;
     description: string;

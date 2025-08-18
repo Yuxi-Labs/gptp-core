@@ -1,4 +1,5 @@
 // src/__tests__/engine/validate/validatePrompt.test.ts
+console.log('[DEBUG][test] GPTP_SCHEMA_URL =', process.env.GPTP_SCHEMA_URL)
 
 import { describe, it, expect, beforeAll } from 'vitest'
 import fs from 'fs/promises'

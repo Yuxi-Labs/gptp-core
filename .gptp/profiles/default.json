@@ -1,9 +1,0 @@
-{
-  "env": {
-    "OPENAI_API_KEY": "fake-key-for-dev-only"
-  },
-  "defaults": {
-    "model": "gpt-4",
-    "temperature": 0.7
-  }
-}

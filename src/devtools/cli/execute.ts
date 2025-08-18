@@ -1,16 +1,19 @@
-import path from 'path'
-import {
-    parsePrompt,
-    normalizePrompt,
-    executePrompt,
-    formatPrompt,
-    loadProfile,
-} from '../../engine'
+// src/devtools/cli/execute.ts
 
-import { loadEnvFile } from '../../engine/utils/env'
-import { validatePrompt } from '../../engine/validate/validatePrompt'
-import { loadSchema } from '../../engine/schema/loadSchema'
-import type { GptpPrompt } from '../../types'
+import path from 'path'
+import { parsePrompt } from '@/engine/parse/parsePrompt'
+import { executePrompt } from '@/engine/execute/executePrompt'
+import { formatPrompt } from '@/engine/format/formatPrompt'
+import { validatePrompt } from '@/engine/validate/validatePrompt'
+import { loadEnvFile } from '@/utils/env'
+import { loadProfile } from '@/utils/profiles'
+import type { GPTPDocument } from '@/types/gptpTypes'
+
+// Optional: placeholder normalizePrompt
+function normalizePrompt(prompt: GPTPDocument): GPTPDocument {
+    // You can add normalization logic here as needed
+    return prompt
+}
 
 loadEnvFile()
 
@@ -27,7 +30,7 @@ function parseInputArgs(args: string[]): Record<string, any> {
     return input
 }
 
-function validateRequiredInputs(prompt: GptpPrompt, input: Record<string, any>) {
+function validateRequiredInputs(prompt: GPTPDocument, input: Record<string, any>) {
     const variables = prompt.variables || {}
 
     for (const [key, def] of Object.entries(variables)) {
@@ -51,18 +54,19 @@ export async function run(): Promise<void> {
 
     const parsedPrompt = await parsePrompt(absPath)
 
-    // 🧠 Now with validation that works
-    const schema = await loadSchema()
-    const isValid = validatePrompt(parsedPrompt, schema)
-    if (!isValid) {
-        console.error('❌ Prompt failed schema validation.')
+    const validation = await validatePrompt(parsedPrompt)
+    if (!validation.valid) {
+        console.error('❌ Prompt failed validation:')
+        for (const err of validation.errors) {
+            console.error(`- ${err.instancePath}: ${err.message}`)
+        }
         process.exit(1)
     }
 
-    const normalized: GptpPrompt = normalizePrompt(parsedPrompt)
+    const normalized = normalizePrompt(parsedPrompt)
     validateRequiredInputs(normalized, input)
 
-    await loadProfile('default') // for future dreams and delusions
+    await loadProfile('default') // optional user config
 
     const result = await executePrompt(normalized, {
         input,
@@ -79,7 +83,7 @@ export async function run(): Promise<void> {
         outputSchema: normalized.output_schema,
     })
 
-    console.log('=== Model Output ===\n')
+    console.log('\n=== Model Output ===\n')
     console.log(output)
 }
 

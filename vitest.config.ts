@@ -3,11 +3,11 @@ import path from 'path'
 
 export default defineConfig({
     test: {
-        include: ['src/**/*.test.ts']
+        include: ['src/**/*.test.ts'],
     },
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, 'src')
-        }
-    }
+            '@': path.resolve(__dirname, 'src'),
+        },
+    },
 })

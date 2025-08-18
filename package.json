@@ -20,7 +20,7 @@
     "build": "rimraf dist && tsc",
     "lint": "eslint src --ext .ts",
     "format": "prettier --write .",
-    "test": "vitest run",
+    "test": "vitest run --reporter verbose",
     "test:watch": "vitest",
     "dev": "tsx src/index.ts",
     "dev:debug": "cross-env GPTP_DEBUG=true tsx src/index.ts",

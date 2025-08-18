@@ -2,7 +2,7 @@
 
 import path from 'path';
 import fs from 'fs/promises';
-import { loadEnvVars } from '../utils/env';
+import { loadEnvVars } from '@/utils/env';
 
 export type GptpProfile = {
     name: string;

@@ -1,9 +1,8 @@
 // src/devtools/cli/validate.ts
 
-import { parsePrompt } from "../../engine/parse";
-import { loadSchema } from "../../engine/schema/loadSchema";
-import { validatePrompt } from "../../engine/validate/validatePrompt";
-import { logger } from "../../engine/utils/logger";
+import { parsePrompt } from "@/engine/parse/parsePrompt";
+import { validatePrompt } from "@/engine/validate/validatePrompt";
+import { logger } from "@/utils/logger";
 
 async function run() {
     const args = process.argv.slice(2);
@@ -24,15 +23,13 @@ async function run() {
         process.exit(1);
     }
 
-    let schema;
+    let result;
     try {
-        schema = await loadSchema();
+        result = await validatePrompt(prompt); // ✅ FIXED: only 1 argument
     } catch (err) {
-        logger.error("validate", `Failed to load schema:`, err);
+        logger.error("validate", `Failed during validation:`, err);
         process.exit(1);
     }
-
-    const result = validatePrompt(prompt, schema);
 
     if (result.valid) {
         logger.info("validate", `✅ ${filePath} is valid.`);

@@ -23,7 +23,7 @@ addFormats(ajv);
 // 🔁 Cache compiled validator
 let validateFn: ValidateFunction | null = null;
 
-async function getValidator(): Promise<Ajv.ValidateFunction> {
+async function getValidator(): Promise<ValidateFunction> {
     if (validateFn) return validateFn;
 
     const schema = await schemaLoader();
