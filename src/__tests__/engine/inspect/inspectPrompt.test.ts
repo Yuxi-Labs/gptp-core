@@ -26,7 +26,7 @@ describe('inspectPrompt', () => {
         const result = inspectPrompt(prompt)
         expect(typeof result).toBe('string')
         expect(result).toContain('Inspect This')
-        expect(result).toMatch(/2 message/)
+        expect(result).toMatch(/Messages: 2/)
     })
 
     it('includes model and format details', () => {
