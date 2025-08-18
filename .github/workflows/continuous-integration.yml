@@ -2,12 +2,12 @@ name: App CI
 
 on:
   push:
-    branches: [ "release/v0.2.0", "main" ]
+    branches: ["release/v0.2.0", "main"]
   pull_request:
-    branches: [ "release/v0.2.0", "main" ]
+    branches: ["release/v0.2.0", "main"]
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
 
     strategy:
@@ -15,20 +15,19 @@ jobs:
         node-version: [20]
 
     steps:
-      - name: ⬇️ Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: ⚙️ Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: npm install
 
-      - name: 🧪 Run tests
-        run: npm test
+      - name: Run tests
+        run: npm run test
 
-      - name: 🏗️ Build project
+      - name: Build project
         run: npm run build
