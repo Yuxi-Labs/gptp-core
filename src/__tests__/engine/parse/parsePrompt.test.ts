@@ -1,3 +1,5 @@
+// src/__tests__/engine/parse/parsePrompt.test.ts
+
 import { describe, beforeAll, afterAll, it, expect } from 'vitest'
 import { writeFile, rm, mkdir } from 'fs/promises'
 import path from 'path'
@@ -41,7 +43,11 @@ describe('parsePrompt', () => {
     })
 
     it('throws when required fields are missing', async () => {
-        const incomplete = { title: 'No messages' }
+        const incomplete = {
+            title: 'Has title',
+            messages: [{ role: 'user', content: 'Still here' }]
+            // description is missing
+        }
         const file = path.join(TEST_DIR, 'incomplete.gptp')
         await writeFile(file, JSON.stringify(incomplete), 'utf-8')
 

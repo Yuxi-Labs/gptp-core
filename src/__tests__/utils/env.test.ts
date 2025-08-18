@@ -1,4 +1,5 @@
 // src/__tests__/utils/env.test.ts
+
 import * as envUtils from '@/utils/env'
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import dotenv from 'dotenv'
@@ -20,13 +21,15 @@ describe('env.ts - environment utility', () => {
 
     beforeEach(() => {
         process.env = { ...originalEnv }
-        fs.mkdirSync(SANDBOX_DIR, { recursive: true })      // ensure dir exists
+        fs.mkdirSync(SANDBOX_DIR, { recursive: true }) // ensure dir exists
     })
 
     afterEach(() => {
         process.env = { ...originalEnv }
         vi.restoreAllMocks()
-        if (fs.existsSync(TEST_ENV_PATH)) fs.unlinkSync(TEST_ENV_PATH) // clean up
+        if (fs.existsSync(TEST_ENV_PATH)) {
+            fs.unlinkSync(TEST_ENV_PATH)
+        }
     })
 
     it('injects provided env vars into process.env', () => {
@@ -73,6 +76,14 @@ describe('env.ts - environment utility', () => {
 
     it('loads values from sandbox .env file into process.env', () => {
         fs.writeFileSync(TEST_ENV_PATH, 'TEST_KEY=loaded_value\n', 'utf8')
+
+        // Log where the file was created
+        if (fs.existsSync(TEST_ENV_PATH)) {
+            console.log('[TEST] ✅ test.env created at:', TEST_ENV_PATH)
+        } else {
+            console.warn('[TEST] ❌ test.env was NOT created at expected path:', TEST_ENV_PATH)
+        }
+
         dotenv.config({ path: TEST_ENV_PATH })
         expect(process.env.TEST_KEY).toBe('loaded_value')
     })
