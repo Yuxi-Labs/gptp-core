@@ -2,9 +2,9 @@
 
 import fs from 'fs/promises'
 import path from 'path'
-import type { GptpPrompt } from '../../types'
+import type { GPTPDocument } from '@/types/gptpTypes'
 
-export async function parsePrompt(filePath: string): Promise<GptpPrompt> {
+export async function parsePrompt(filePath: string): Promise<GPTPDocument> {
     const absPath = path.resolve(filePath)
 
     let content: string
@@ -32,5 +32,5 @@ export async function parsePrompt(filePath: string): Promise<GptpPrompt> {
         }
     }
 
-    return parsed as GptpPrompt
+    return parsed as GPTPDocument
 }

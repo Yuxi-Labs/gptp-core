@@ -1,16 +1,16 @@
-// src/engine/execute/index.ts
+// src/engine/execute/executePrompt.ts
 
-import { GptpPrompt } from '../../types'
-import { interpolateVariables } from '../utils/interpolation'
-import { callOpenAI } from './runners/openai'
+import type { GPTPDocument, GPTPMessage } from '@/types/gptpTypes'
+import { interpolateVariables } from '@/utils/interpolation'
+import { callOpenAI } from '@/providers/openai/openaiRunner'
 
-interface ExecutionOptions {
+export interface ExecutionOptions {
     input: Record<string, any>
     run?: boolean
 }
 
 export interface ExecutionResult {
-    resolvedMessages: { role: string; content: string }[]
+    resolvedMessages: GPTPMessage[]
     modelOutput: string
 }
 
@@ -18,16 +18,16 @@ export interface ExecutionResult {
  * Executes a GPTP prompt: resolves variables and optionally calls a model.
  */
 export async function executePrompt(
-    prompt: GptpPrompt,
+    prompt: GPTPDocument,
     options: ExecutionOptions
 ): Promise<ExecutionResult> {
     const { input, run = false } = options
 
-    if (!prompt.messages || !Array.isArray(prompt.messages)) {
+    if (!Array.isArray(prompt.messages)) {
         throw new Error('Invalid prompt: "messages" must be an array.')
     }
 
-    const resolvedMessages = prompt.messages.map((msg) => {
+    const resolvedMessages: GPTPMessage[] = prompt.messages.map((msg) => {
         if (typeof msg.content !== 'string') {
             throw new Error(`Invalid message content for role "${msg.role}". Must be a string.`)
         }
@@ -41,7 +41,7 @@ export async function executePrompt(
     if (!run) {
         return {
             resolvedMessages,
-            modelOutput: '', // dry run fallback
+            modelOutput: '',
         }
     }
 

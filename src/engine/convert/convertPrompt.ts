@@ -1,20 +1,22 @@
-import type { GptpPrompt } from '../../types'
+// src/engine/convert/convertPrompt.ts
+import type { GPTPDocument } from '@/types/gptpTypes'
 
-export function convertPrompt(prompt: GptpPrompt, format: string): string {
+export function convertPrompt(prompt: GPTPDocument, format: string): string {
     switch (format) {
-        case 'prompt.md': {
-            const lines = prompt.messages.map(
-                m => `### ${m.role}\n\n${m.content}`
-            ).join('\n\n')
+        case 'prompt.md':
+            return `# ${prompt.title}\n\n${prompt.description}\n\n` +
+                prompt.messages.map(
+                    m => `### ${m.role}\n\n${m.content}`
+                ).join('\n\n')
 
-            return `# ${prompt.title}\n\n${prompt.description}\n\n${lines}`
-        }
+        case 'prompt':
+        case 'agent':
+            return prompt.messages
+                .map(m => `${m.role.toUpperCase()}: ${m.content}`)
+                .join('\n\n')
 
-        case 'prompt': // Humanloop style?
-        case 'agent': {
-            const lines = prompt.messages.map(m => `${m.role.toUpperCase()}: ${m.content}`)
-            return lines.join('\n\n')
-        }
+        case 'raw':
+            return JSON.stringify(prompt, null, 2)
 
         default:
             throw new Error(`Unsupported target format: ${format}`)
