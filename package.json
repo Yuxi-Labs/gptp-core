@@ -17,10 +17,10 @@
   "sideEffects": false,
   "scripts": {
     "clean": "rimraf dist",
-    "build": "rimraf dist && tsc",
+    "build": "tsc -p tsconfig.json",
     "lint": "eslint src --ext .ts",
     "format": "prettier --write .",
-    "test": "vitest run",
+    "test": "vitest",
     "test:watch": "vitest",
     "dev": "tsx src/index.ts",
     "dev:debug": "cross-env GPTP_DEBUG=true tsx src/index.ts",
