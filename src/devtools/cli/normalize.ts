@@ -1,7 +1,7 @@
 import { parsePrompt } from '@/engine/parse/parsePrompt'
 import { normalizePrompt } from '@/engine/normalize/normalizePrompt'
 import { diffPromptDeep } from '@/engine/diff/diffPrompts'
-import fs from 'fs/promises'
+import * as fs from 'fs/promises'
 import path from 'path'
 
 function parseFlags(args: string[]): Record<string, string> {
@@ -40,16 +40,16 @@ export async function normalizePromptCLI() {
                 console.log(`    + to:   ${JSON.stringify(diff[key].to, null, 2)}`)
             }
         }
-        process.exit(0)
+        process.exit(0);
     }
 
-    const output = JSON.stringify(normalized, null, 2)
+    const output = JSON.stringify(normalized, null, 2);
 
     if (flags.out) {
-        const outPath = path.resolve(flags.out)
-        await fs.writeFile(outPath, output, 'utf-8')
-        console.log(`✅ Normalized prompt written to ${flags.out}`)
+        const outPath = path.resolve(flags.out);
+        await fs.writeFile(outPath, output, 'utf-8');
+        console.log(`\u2705 Normalized prompt written to ${flags.out}`)
     } else {
-        console.log(output)
+        console.log(output);
     }
 }

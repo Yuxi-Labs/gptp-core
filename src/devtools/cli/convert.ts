@@ -1,6 +1,6 @@
 // src/bin/convert.ts (or wherever this is located)
 
-import fs from 'fs/promises'
+import * as fs from 'fs/promises'
 import path from 'path'
 import { parsePrompt } from '@/engine/parse/parsePrompt'
 import { convertPrompt } from '@/engine/convert/convertPrompt'
@@ -31,7 +31,13 @@ async function run() {
     const out = flags.out
 
     if (!to) {
-        console.error('❌ Missing --to flag. Please specify a target format.')
+        console.error('❌ Missing --to flag. Please specify a target format (e.g., prompt.md, raw).')
+        process.exit(1)
+    }
+
+    const supportedFormats = ['prompt.md', 'raw', 'agent']
+    if (!supportedFormats.includes(to)) {
+        console.error(`❌ Unsupported format: ${to}. Supported formats are: ${supportedFormats.join(', ')}.`)
         process.exit(1)
     }
 
@@ -48,7 +54,7 @@ async function run() {
             converted = convertPrompt(parsed, to)
         }
     } catch (err: any) {
-        console.error(`❌ Failed to convert: ${err.message}`)
+        console.error(`❌ Failed to convert: ${err.message}. Please ensure the input file is valid and the format is correct.`)
         process.exit(1)
     }
 

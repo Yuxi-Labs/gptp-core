@@ -22,7 +22,7 @@
     "format": "prettier --write .",
     "test": "vitest",
     "test:watch": "vitest",
-    "dev": "tsx src/index.ts",
+    "dev": "cross-env NODE_ENV=development tsx --inspect src/index.ts",
     "dev:debug": "cross-env GPTP_DEBUG=true tsx src/index.ts",
     "gptp:execute": "tsx src/devtools/cli/execute.ts",
     "gptp:execute:mock": "cross-env MOCK=true tsx src/devtools/cli/execute.ts",
@@ -31,8 +31,8 @@
     "gptp:init": "tsx src/devtools/cli/init.ts",
     "gptp:migrate": "tsx src/devtools/cli/migrate.ts",
     "gptp:convert": "tsx src/devtools/cli/convert.ts",
-    "print:codebase": "tsx src/devtools/capture/printCodebase.ts"
-
+    "print:codebase": "tsx src/devtools/capture/printCodebase.ts",
+    "prepare": "npm run build"
   },
   "keywords": [
     "gptp",
@@ -75,5 +75,9 @@
     "chalk": "^5.5.0",
     "lodash-es": "^4.17.21",
     "node-fetch": "^3.3.2"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/WilliamSawyerr"
   }
 }

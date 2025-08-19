@@ -2,7 +2,7 @@
 
 <p>
   <!-- Build status -->
-  <img src="https://img.shields.io/github/actions/workflow/status/Yuxi-Labs/gptp-core/continuous-integration.yml?branch=release%2Fv0.1.0" alt="Build Status" />
+  <img src="https://img.shields.io/github/actions/workflow/status/Yuxi-Labs/gptp-core/continuous-integration.yml?branch=release%2Fv0.2.0" alt="Build Status" />
 
   <!-- Latest Release -->
   <img src="https://img.shields.io/github/v/release/Yuxi-Labs/gptp-core?include_prereleases&sort=semver" alt="Latest Release" />
@@ -23,37 +23,27 @@
   <img src="https://img.shields.io/badge/License-MIT-orange.svg" alt="License: MIT" />
 </p>
 
-Core SDK for working with **GPTP** (Generative Prompt Template Package) files.  
-Provides validation, normalization, execution, and developer tooling for the GPTP file format.  
-Designed to be reusable by:
+Core SDK for working with **GPTP** (Generative Prompt Template Package) files.
 
-- **CLI tools** (e.g., `gptp-cli`)
-- **VS Code extensions**
-- **SDK wrappers** (Python, web, etc.)
-- **Custom prompt runners and editors**
+This library provides validation, normalization, execution, formatting, migration, diffing, and inspection utilities for GPTP. It’s designed to be reused by:
+
+- CLI tools
+- VS Code extensions
+- Server & web apps
+- Custom prompt runners and editors
 
 ---
 
 ## ✨ Features
 
-- **Schema Validation**  
-  Validates `.gptp` files against the official GPTP JSON Schema (v1.2.0)  
-  Always prioritizes the remote schema; falls back to local cache only if remote is unavailable.
+- Validation: Validates `.gptp` JSON against the official GPTP Schema (v1.2.0). Remote-first with cached fallback.
+- Parsing & Normalization: Parse prompt files and normalize shape for execution.
+- Execution Engine: Resolve variables and call providers (OpenAI, Azure OpenAI, Anthropic, Meta Llama, Mistral, Cohere, Local).
+- Formatting: Output formatters for `markdown`, `html`, `json`, and `plain-text`.
+- Diff & Migrate: Compare prompts and upgrade between schema versions.
+- Inspect: Extract variables and summarize message roles.
 
-- **Prompt Normalization**  
-  Ensures prompts are well-formed and ready for execution.
-
-- **Execution Engine**  
-  Runs GPTP files by resolving variables, injecting context, and calling AI providers.
-
-- **Migration Tools**  
-  Upgrade `.gptp` files between schema versions.
-
-- **Diffing**  
-  Compare two GPTP files and see changes in variables, messages, and metadata.
-
-- **Pluggable**  
-  Hook in custom providers, formatters, or preprocessors.
+Requires Node.js 18+.
 
 ---
 
@@ -61,102 +51,142 @@ Designed to be reusable by:
 
 ```sh
 npm install @yuxi-labs/gptp-core
-````
-
----
-
-## 🗂 Project Structure
-
-```plaintext
-src/
-  engine/        # Core reusable functionality
-    diff/        # Compare GPTP files
-    execute/     # Run GPTP files
-    format/      # Format prompts
-    fs/          # Filesystem helpers
-    inspect/     # Inspect GPTP files
-    migrate/     # Upgrade GPTP files
-    normalize/   # Normalize prompt structure
-    parse/       # Parse GPTP JSON
-    profile/     # Profile loading/resolution
-    schema/      # Load schema from remote or cache
-    utils/       # Environment + logging helpers
-    validate/    # Validate GPTP files
-  devtools/      # Developer helper scripts
-  plugins/       # Plugin hooks (future)
-  types/         # Shared TypeScript types
 ```
 
 ---
 
-## 🚀 Quick Start
+## � Quick Start (API)
 
 ```ts
-import { loadSchema } from './engine/schema/loadSchema.js';
-import { validatePrompt } from './engine/validate/validatePrompt.js';
-import { parsePrompt } from './engine/parse/index.js';
-import fs from 'node:fs/promises';
+import { parsePrompt, validatePrompt, executePrompt, formatPrompt } from '@yuxi-labs/gptp-core';
 
 async function main() {
-  const schema = await loadSchema();
+  // 1) Parse a GPTP file (JSON)
+  const prompt = await parsePrompt('docs/examples/hello-world.gptp');
 
-  const raw = await fs.readFile('./docs/examples/hello-world.gptp', 'utf8');
-  const prompt = parsePrompt(raw);
-
-  const { valid, errors } = validatePrompt(prompt, schema);
-
-  if (!valid) {
-    console.error('Prompt failed validation:', errors);
+  // 2) Validate against the GPTP schema (remote-first with cached fallback)
+  const validation = await validatePrompt(prompt);
+  if (!validation.valid) {
+    console.error('❌ Validation failed:', validation.errors);
     process.exit(1);
   }
 
-  console.log('✅ Prompt is valid!');
+  // 3) Execute without calling a model (set run: true and configure provider keys to actually call)
+  const { resolvedMessages, modelOutput } = await executePrompt(prompt, {
+    input: { name: 'World' },
+    run: false,
+  });
+
+  // 4) Format output as markdown
+  const output = formatPrompt({ content: modelOutput || 'Hello from GPTP!' }, { outputFormat: 'markdown' });
+  console.log(output);
 }
 
-main().catch(console.error);
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
 ```
 
 ---
 
-## 🔍 Validation Policy
+## 🧰 CLI scripts (for this repo)
 
-* **Always fetch schema from remote first** (URL in `GPTP_SCHEMA_URL` env var)
-* If remote fails but a local cache exists at `.gptp/cache/gptp.schema.json`, use that
-* If neither remote nor cache are available, **fail immediately** with a clear error message
-* Never run without a valid schema
+This repository ships several helper scripts for local development and demos:
+
+- Execute: `npm run gptp:execute` (supports `MOCK=true`)
+- Format: `npm run gptp:format`
+- Diff: `npm run gptp:diff`
+- Init: `npm run gptp:init`
+- Migrate: `npm run gptp:migrate`
+- Convert: `npm run gptp:convert`
+
+Example (Windows PowerShell):
+
+```powershell
+$env:MOCK = 'true'
+npm run gptp:execute
+```
+
+Notes:
+- With `MOCK=true`, model calls return a stubbed response.
+- To call OpenAI for real, set `run: true` in `executePrompt` and configure `OPENAI_API_KEY`.
 
 ---
 
-## ⚙️ Environment Variables
+## 🔍 Validation policy
 
-| Variable          | Description                                  | Required |
-| ----------------- | -------------------------------------------- | -------- |
-| `GPTP_SCHEMA_URL` | URL to the GPTP JSON Schema                  | ✅        |
-| `GPTP_DEBUG`      | Enable verbose debug logs (`true` / `false`) | ❌        |
+- Fetch schema from the remote URL in `GPTP_SCHEMA_URL` first
+- If remote is unavailable, fall back to the local cache at `.gptp/cache/gptp.schema.json`
+- If both fail, validation aborts with a clear error message
+
+Example schema URL (v1.2.0):
+
+```text
+https://raw.githubusercontent.com/Yuxi-Labs/gptp/refs/tags/v1.2.0/schema/gptp.schema.json
+```
+
+---
+
+## ⚙️ Environment variables
+
+| Name               | Purpose                                               | Required |
+| ------------------ | ----------------------------------------------------- | -------- |
+| `GPTP_SCHEMA_URL`  | Remote URL for GPTP JSON Schema                       | ✅       |
+| `GPTP_DEBUG`       | Verbose debug logs (`true`/`false`)                   | ❌       |
+| `OPENAI_API_KEY`   | Required when executing with OpenAI (run: true)       | ❌       |
+
+Other providers may require their own keys; see provider implementations under `src/providers/*`.
+
+---
+
+## 📚 API surface
+
+From `@yuxi-labs/gptp-core`:
+
+- `parsePrompt(filePath)` → `Promise<GPTPDocument>`
+- `validatePrompt(prompt)` → `Promise<{ valid: boolean; errors: AjvError[]; data?: GPTPDocument }>`
+- `normalizePrompt(prompt)` → `GPTPDocument`
+- `executePrompt(prompt, { input, run })` → `Promise<{ resolvedMessages, modelOutput }>`
+- `formatPrompt(rawOutput, { outputFormat, outputSchema })` → `string`
+- `formatOutput(rawOutput, { outputFormat, outputSchema })` → `string`
+- `inspectPrompt`, `getDeclaredVariables`, `getRequiredVariables`, `getMessageRoles`, `summarizePrompt`
+- `migratePrompt`, `migrateTo120`
+- `convertPrompt`, `diffPromptKeys`, `initPrompt`
+- `loadProfile`
+
+Formatting supports: `markdown`, `html`, `json`, `plain-text`. Unsupported formats throw `Unsupported output format: <format>`.
 
 ---
 
 ## 🧪 Development
 
-### Install dependencies
+Install deps:
 
 ```sh
 npm install
 ```
 
-### Run tests
+Run tests:
 
 ```sh
 npm test
 ```
 
-### Run in dev mode
+Build:
 
 ```sh
-npm run dev
+npm run build
 ```
 
-### Run with debug logs
+Lint & format:
+
+```sh
+npm run lint
+npm run format
+```
+
+Debug (verbose logs):
 
 ```sh
 npm run dev:debug

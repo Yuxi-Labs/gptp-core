@@ -1,7 +1,7 @@
 // src/__tests__/utils/profiles.test.ts
 
 import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest'
-import fs from 'fs/promises'
+import * as fs from 'fs/promises'
 import path from 'path'
 import { loadProfile } from '@/utils/profiles'
 

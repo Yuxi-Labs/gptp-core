@@ -24,26 +24,28 @@ function formatJsonToHtml(obj: unknown): string {
 }
 
 export function formatAsHtml(raw: any): string {
-    if (typeof raw === 'string') {
-        const escaped = escapeHtml(raw)
-        return `<pre><code>${escaped}</code></pre>`
-    }
-
-    if (
-        typeof raw === 'number' ||
-        typeof raw === 'boolean' ||
-        raw === null
-    ) {
-        return `<pre><code>${escapeHtml(String(raw))}</code></pre>`
-    }
-
-    if (typeof raw === 'undefined') {
-        return `<pre><code class="undefined">[undefined]</code></pre>`
+    if (raw === null || raw === undefined) {
+        return `<pre><code class="undefined">[null/undefined]</code></pre>`
     }
 
     try {
-        return formatJsonToHtml(raw)
-    } catch {
-        return `<pre><code class="error">[Error: Failed to stringify output]</code></pre>`
+        if (typeof raw === 'string') {
+            const escaped = escapeHtml(raw)
+            return `<pre><code>${escaped}</code></pre>`
+        }
+
+        if (typeof raw === 'number' || typeof raw === 'boolean') {
+            return `<pre><code>${escapeHtml(String(raw))}</code></pre>`
+        }
+
+        if (Array.isArray(raw) || typeof raw === 'object') {
+            return formatJsonToHtml(raw)
+        }
+
+        // Fallback for unrecognized types
+        return `<pre><code class="error">[unrecognized type]</code></pre>`
+    } catch (error) {
+        console.error('Error formatting as HTML:', error)
+        return `<pre><code class="error">[error formatting output]</code></pre>`
     }
 }

@@ -47,26 +47,31 @@ function formatArrayAsMarkdown(arr: any[]): string {
 }
 
 export function formatAsMarkdown(raw: any): string {
-    if (typeof raw === 'undefined') {
-        return '`[undefined]`'
+    if (raw === null || raw === undefined) {
+        return '`[null/undefined]`'
     }
 
-    if (typeof raw === 'string') {
-        return escapeMd(raw)
-    }
+    try {
+        if (typeof raw === 'string') {
+            return escapeMd(raw)
+        }
 
-    if (typeof raw === 'number' || typeof raw === 'boolean' || raw === null) {
-        return '`' + String(raw) + '`'
-    }
+        if (typeof raw === 'number' || typeof raw === 'boolean') {
+            return '`' + String(raw) + '`'
+        }
 
-    if (Array.isArray(raw)) {
-        return formatArrayAsMarkdown(raw)
-    }
+        if (Array.isArray(raw)) {
+            return formatArrayAsMarkdown(raw)
+        }
 
-    if (typeof raw === 'object') {
-        return formatObjectAsMarkdown(raw)
-    }
+        if (typeof raw === 'object') {
+            return formatObjectAsMarkdown(raw)
+        }
 
-    // Fallback
-    return '`[unrecognized type]`'
+        // Fallback for unrecognized types
+        return '`[unrecognized type]`'
+    } catch (error) {
+        console.error('Error formatting as Markdown:', error)
+        return '`[error formatting output]`'
+    }
 }

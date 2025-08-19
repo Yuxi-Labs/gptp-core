@@ -66,7 +66,11 @@ export async function run(): Promise<void> {
     const normalized = normalizePrompt(parsedPrompt)
     validateRequiredInputs(normalized, input)
 
-    await loadProfile('default') // optional user config
+    try {
+        await loadProfile('default')
+    } catch {
+        console.warn('⚠️ No profile found. Proceeding with default settings.')
+    }
 
     const result = await executePrompt(normalized, {
         input,
@@ -78,13 +82,8 @@ export async function run(): Promise<void> {
         process.exit(1)
     }
 
-    const output = formatPrompt(result.modelOutput, {
-        outputFormat: normalized.output_format || 'plain-text',
-        outputSchema: normalized.output_schema,
-    })
-
-    console.log('\n=== Model Output ===\n')
-    console.log(output)
+    console.log('=== Model Output ===\n')
+    console.log(result.modelOutput)
 }
 
 run()

@@ -1,10 +1,19 @@
 // src/__tests__/engine/parse/parsePrompt.test.ts
 
+vi.mock('fs/promises', async () => {
+  const actual = await vi.importActual<typeof import('fs/promises')>('fs/promises');
+  return {
+    ...actual,
+    default: actual,
+  };
+});
+
 import { describe, beforeAll, afterAll, it, expect } from 'vitest'
 import { writeFile, rm, mkdir } from 'fs/promises'
 import path from 'path'
 import { parsePrompt } from '@/engine/parse/parsePrompt'
 import type { GPTPDocument } from '@/types/gptpTypes'
+import { vi } from 'vitest'
 
 const TEST_DIR = path.resolve('.gptp/tests')
 
@@ -49,7 +58,7 @@ describe('parsePrompt', () => {
             // description is missing
         }
         const file = path.join(TEST_DIR, 'incomplete.gptp')
-        await writeFile(file, JSON.stringify(incomplete), 'utf-8')
+        await writeFile(file, JSON.stringify(incomplete, null, 2), 'utf-8')
 
         await expect(parsePrompt(file)).rejects.toThrow(/Missing required field "description"/i)
     })
@@ -57,5 +66,24 @@ describe('parsePrompt', () => {
     it('throws if file is missing', async () => {
         const missing = path.join(TEST_DIR, 'does-not-exist.gptp')
         await expect(parsePrompt(missing)).rejects.toThrow(/Failed to read file/)
+    })
+
+    it('throws on empty file', async () => {
+        const emptyFile = path.join(TEST_DIR, 'empty.gptp')
+        await writeFile(emptyFile, '', 'utf-8')
+
+        await expect(parsePrompt(emptyFile)).rejects.toThrow(/Invalid JSON/)
+    })
+
+    it('throws on invalid messages structure', async () => {
+        const invalidMessages = {
+            title: 'Invalid Messages',
+            description: 'This is a test',
+            messages: [{ role: 'user' }] // Missing 'content'
+        }
+        const file = path.join(TEST_DIR, 'invalid-messages.gptp')
+        await writeFile(file, JSON.stringify(invalidMessages, null, 2), 'utf-8')
+
+        await expect(parsePrompt(file)).rejects.toThrow(/Invalid 'messages' field/)
     })
 })

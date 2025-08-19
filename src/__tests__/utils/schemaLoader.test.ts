@@ -1,7 +1,7 @@
 // src/__tests__/utils/schemaLoader.test.ts
 
 import { describe, it, vi, expect, beforeEach, afterEach } from 'vitest'
-import fs from 'fs/promises'
+import * as fs from 'fs/promises'
 import path from 'path'
 import { schemaLoader } from '@/utils/schemaLoader'
 import * as env from '@/utils/env'

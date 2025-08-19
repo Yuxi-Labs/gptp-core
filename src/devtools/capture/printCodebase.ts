@@ -6,7 +6,7 @@
 // • Obeys .gitignore rules (plus some hard-coded extras).
 // • Accepts BOTH “--out file.txt” and “--out=file.txt”.
 
-import fs from 'fs/promises'
+import * as fs from 'fs/promises'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import ignore, { Ignore } from 'ignore'

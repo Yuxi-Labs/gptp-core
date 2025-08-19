@@ -1,6 +1,6 @@
 // src/devtools/cli/resolve.ts
 import path from 'path'
-import fs from 'fs/promises'
+import * as fs from 'fs/promises'
 import { parsePrompt } from '@/engine/parse/parsePrompt'
 import { normalizePrompt } from '@/engine/normalize/normalizePrompt'
 import type { GPTPDocument } from '@/types/gptpTypes'
@@ -127,7 +127,7 @@ export async function resolveCLI() {
 
 if (require.main === module) {
     resolveCLI().catch((err) => {
-        console.error('❌ resolve failed:', err instanceof Error ? err.message : String(err))
-        process.exit(1)
-    })
+        console.error('\u274c resolve failed:', err instanceof Error ? err.message : String(err))
+        process.exit(1);
+    });
 }
