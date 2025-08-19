@@ -1,8 +1,10 @@
+// src/bin/convert.ts (or wherever this is located)
+
 import fs from 'fs/promises'
 import path from 'path'
-import { parsePrompt } from '../../engine/parse'
-import { convertToFormat } from '../../engine/convert/convertToFormat'
-import { convertFromFormat } from '../../engine/convert/convertFromFormat'
+import { parsePrompt } from '@/engine/parse/parsePrompt'
+import { convertPrompt } from '@/engine/convert/convertPrompt'
+import type { GPTPDocument } from '@/types/gptpTypes'
 
 function parseFlags(args: string[]) {
     const flags: Record<string, string> = {}
@@ -34,16 +36,16 @@ async function run() {
     }
 
     const absInput = path.resolve(inputFile)
-    const inputRaw = await fs.readFile(absInput, 'utf-8')
-
     let converted: string
 
     try {
         if (path.extname(inputFile) === '.gptp') {
             const parsed = await parsePrompt(absInput)
-            converted = convertToFormat(parsed, to)
+            converted = convertPrompt(parsed, to)
         } else {
-            converted = convertFromFormat(inputRaw, to)
+            const raw = await fs.readFile(absInput, 'utf-8')
+            const parsed: GPTPDocument = JSON.parse(raw)
+            converted = convertPrompt(parsed, to)
         }
     } catch (err: any) {
         console.error(`❌ Failed to convert: ${err.message}`)

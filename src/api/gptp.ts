@@ -1,17 +1,17 @@
 // Re-export core types
-export * from './types';
+export * from '@/types/gptpTypes';
 
 // Core functionality
-export { diffPromptKeys, diffPromptDeep } from './engine/diff';
-export { executePrompt } from './engine/execute';
-export { formatPrompt } from './engine/format';
-export { writeGptpFile } from './engine/fs';
-export { inspectPrompt } from './engine/inspect';
-export { migratePrompt } from './engine/migrate';
-export { normalizePrompt } from './engine/normalize';
-export { parsePrompt } from './engine/parse';
-export { loadProfile } from './engine/profile';
-export { loadSchema } from './engine/schema/loadSchema';
-export { validatePrompt } from './engine/validate/validatePrompt';
+export { diffPromptKeys, diffPromptDeep } from '@/engine/diff/diffPrompts';
+export { executePrompt } from '@/engine/execute/executePrompt';
+export { formatPrompt } from '@/engine/format/formatPrompt';
+export { readGptpFile, writeGptpFile } from '@/utils/fileLoader';
+export { inspectPrompt } from '@/engine/inspect/inspectPrompt';
+export { migratePrompt } from '@/engine/migrate/migratePrompt';
+export { normalizePrompt } from '@/engine/normalize/normalizePrompt';
+export { parsePrompt } from '@/engine/parse/parsePrompt';
+export { loadProfile } from '@/utils/profiles';
+export { schemaLoader } from '@/utils/schemaLoader';
+export { validatePrompt } from '@/engine/validate/validatePrompt';
 
 

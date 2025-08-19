@@ -1,7 +1,7 @@
 // src/devtools/cli/diff.ts
 
-import { diffPromptKeys, diffPromptDeep } from '../../engine/diff'
-import { parsePrompt } from '../../engine/parse'
+import { diffPromptKeys, diffPromptDeep } from '@/engine/diff/diffPrompts'
+import { parsePrompt } from '@/engine/parse/parsePrompt'
 import path from 'path'
 
 async function main() {

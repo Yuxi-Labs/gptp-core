@@ -1,6 +1,6 @@
-import { parsePrompt } from '../../engine/parse'
-import { normalizePrompt } from '../../engine/normalize'
-import { diffPromptDeep } from '../../engine/diff'
+import { parsePrompt } from '@/engine/parse/parsePrompt'
+import { normalizePrompt } from '@/engine/normalize/normalizePrompt'
+import { diffPromptDeep } from '@/engine/diff/diffPrompts'
 import fs from 'fs/promises'
 import path from 'path'
 
