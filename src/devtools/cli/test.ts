@@ -1,9 +1,9 @@
-import { parseTestFlags } from "./helpers/parseFlags";
-import { parsePrompt } from "../../engine/parse";
-import { normalizePrompt } from "../../engine/normalize";
-import { executePrompt } from "../../engine/execute";
-import { formatPrompt } from "../../engine/format";
-import { logger } from "../../engine/utils/logger";
+import { parseTestFlags } from "./helpers/parsing/parseFlags";
+import { parsePrompt } from "@/engine/parse/parsePrompt";
+import { normalizePrompt } from "@/engine/normalize/normalizePrompt";
+import { executePrompt } from "@/engine/execute/executePrompt";
+import { formatPrompt } from "@/engine/format/formatPrompt";
+import { logger } from "@/utils/logger";
 
 async function run() {
     const args = process.argv.slice(2);

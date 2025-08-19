@@ -1,6 +1,6 @@
 import fs from 'fs/promises'
 import path from 'path'
-import { formatOutput } from '../../engine/format'
+import { formatOutput } from '@/engine/format/formatPrompt'
 
 type FormatFlags = {
     format?: 'plain-text' | 'markdown' | 'json' | 'html'

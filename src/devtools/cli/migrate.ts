@@ -1,9 +1,12 @@
-import { parsePrompt } from '../../engine/parse'
-import { migratePrompt } from '../../engine/migrate'
-import { loadSchema } from '../../engine/schema/loadSchema'
-import { validatePrompt } from '../../engine/validate/validatePrompt'
+// src/bin/migrate.ts
+
 import fs from 'fs/promises'
 import path from 'path'
+import { parsePrompt } from '@/engine/parse/parsePrompt'
+import { migratePrompt } from '@/engine/migrate/migratePrompt'
+import { schemaLoader } from '@/utils/schemaLoader'
+import { validatePrompt } from '@/engine/validate/validatePrompt'
+import type { GPTPDocument } from '@/types/gptpTypes'
 
 function parseFlags(args: string[]): Record<string, string> {
     const flags: Record<string, string> = {}
@@ -17,21 +20,21 @@ function parseFlags(args: string[]): Record<string, string> {
 }
 
 export async function migratePromptCLI() {
-    const [, , filePath, ...rest] = process.argv
+    const [, , filePath, ...restArgs] = process.argv
 
     if (!filePath) {
         console.error('❌ Usage: gptp migrate <file.gptp> [--out=newfile.gptp]')
         process.exit(1)
     }
 
-    const flags = parseFlags(rest)
+    const flags = parseFlags(restArgs)
     const absPath = path.resolve(filePath)
 
-    let prompt
+    let prompt: GPTPDocument
     try {
         prompt = await parsePrompt(absPath)
     } catch (err: any) {
-        console.error(`❌ Failed to parse ${filePath}: ${err.message}`)
+        console.error(`❌ Failed to parse "${filePath}": ${err.message}`)
         process.exit(1)
     }
 
@@ -42,16 +45,16 @@ export async function migratePromptCLI() {
 
     const migrated = migratePrompt(prompt)
 
-    // Schema validation after migration (because we like correctness, unlike your lifestyle choices)
-    let schema
+    // Validate against current schema
+    let schema: object
     try {
-        schema = await loadSchema()
+        schema = await schemaLoader()
     } catch (err: any) {
         console.error(`❌ Failed to load schema: ${err.message}`)
         process.exit(1)
     }
 
-    const result = validatePrompt(migrated, schema)
+    const result = await validatePrompt(migrated, schema) // ✅ make this `await`
 
     if (!result.valid) {
         console.error('❌ Migration produced an invalid prompt. Validation errors:')
@@ -69,7 +72,7 @@ export async function migratePromptCLI() {
             await fs.writeFile(outPath, output, 'utf-8')
             console.log(`✅ Migrated prompt saved to ${flags.out}`)
         } catch (err: any) {
-            console.error(`❌ Failed to write file: ${err.message}`)
+            console.error(`❌ Failed to write output file: ${err.message}`)
             process.exit(1)
         }
     } else {

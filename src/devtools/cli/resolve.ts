@@ -1,9 +1,9 @@
 // src/devtools/cli/resolve.ts
 import path from 'path'
 import fs from 'fs/promises'
-import { parsePrompt } from '../../engine/parse'
-import { normalizePrompt } from '../../engine/normalize'
-import type { GptpPrompt } from '../../types'
+import { parsePrompt } from '@/engine/parse/parsePrompt'
+import { normalizePrompt } from '@/engine/normalize/normalizePrompt'
+import type { GPTPDocument } from '@/types/gptpTypes'
 
 type Flags = {
     out?: string
@@ -63,7 +63,7 @@ function deepMerge<T = any>(parent: T, child: T): T {
 async function resolveExtendsFromFile(
     filePath: string,
     seen: Set<string> = new Set()
-): Promise<{ resolved: GptpPrompt; tree: string[] }> {
+): Promise<{ resolved: GPTPDocument; tree: string[] }> {
     const abs = path.resolve(filePath)
     if (seen.has(abs)) {
         throw new Error(`Cycle detected while resolving extends: ${abs}`)
@@ -75,14 +75,14 @@ async function resolveExtendsFromFile(
 
     const rel = (prompt as any).extends as string | undefined
     if (!rel) {
-        return { resolved: prompt as GptpPrompt, tree }
+        return { resolved: prompt as GPTPDocument, tree }
     }
 
     const basePath = path.resolve(path.dirname(abs), rel)
     const { resolved: baseResolved, tree: baseTree } = await resolveExtendsFromFile(basePath, seen)
 
     // Merge: base <- child
-    const merged = deepMerge<GptpPrompt>(baseResolved, prompt as GptpPrompt)
+    const merged = deepMerge<GPTPDocument>(baseResolved, prompt as GPTPDocument)
 
     // Drop extends in merged so the result is standalone
     delete (merged as any).extends
@@ -100,7 +100,7 @@ export async function resolveCLI() {
     const flags = parseFlags(rest)
     const { resolved, tree } = await resolveExtendsFromFile(fileArg)
 
-    let finalPrompt: GptpPrompt = resolved
+    let finalPrompt: GPTPDocument = resolved
 
     // By default we drop `extends`. If user insists, put it back (not recommended).
     if (flags.keepExtends === 'true') {
