@@ -1,5 +1,5 @@
 export interface GPTPDocument {
-    $doctype: 'gptp' | 'GPTP';
+    $doctype: string; // Can carry values like 'gptp' or 'GPTP'
     schemaVersion: string;
     promptVersion: string;
     title: string;

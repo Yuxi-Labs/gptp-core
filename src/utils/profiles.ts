@@ -1,7 +1,7 @@
 // src/engine/profile/index.ts
 
 import path from 'path';
-import fs from 'fs/promises';
+import * as fs from 'fs/promises';
 import { loadEnvVars } from '@/utils/env';
 
 export type GptpProfile = {

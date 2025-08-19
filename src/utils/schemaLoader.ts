@@ -1,6 +1,6 @@
 // src/engine/schema/loadSchema.ts
 
-import fs from 'fs/promises'
+import * as fs from 'fs/promises'
 import path from 'path'
 import { getEnv } from '@/utils/env'
 import { logger } from '@/utils/logger'

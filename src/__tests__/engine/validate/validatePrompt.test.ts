@@ -2,7 +2,7 @@
 console.log('[DEBUG][test] GPTP_SCHEMA_URL =', process.env.GPTP_SCHEMA_URL)
 
 import { describe, it, expect, beforeAll } from 'vitest'
-import fs from 'fs/promises'
+import * as fs from 'fs/promises'
 import path from 'path'
 import 'dotenv/config'
 

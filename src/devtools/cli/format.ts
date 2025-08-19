@@ -1,4 +1,4 @@
-import fs from 'fs/promises'
+import * as fs from 'fs/promises'
 import path from 'path'
 import { formatOutput } from '@/engine/format/formatPrompt'
 
@@ -38,7 +38,7 @@ async function run() {
     try {
         rawText = await fs.readFile(absPath, 'utf8')
     } catch (err: any) {
-        console.error(`❌ Failed to read file: ${absPath}\n${err.message}`)
+        console.error(`\u274c Failed to read file: ${absPath}\n${err.message}`)
         process.exit(1)
     }
 
@@ -56,7 +56,7 @@ async function run() {
             const schemaRaw = await fs.readFile(schemaPath, 'utf8')
             outputSchema = JSON.parse(schemaRaw)
         } catch (err: any) {
-            console.error(`❌ Failed to load schema from ${flags.schema}: ${err.message}`)
+            console.error(`\u274c Failed to load schema from ${flags.schema}: ${err.message}`)
             process.exit(1)
         }
     }
@@ -68,7 +68,7 @@ async function run() {
         })
         console.log(result)
     } catch (err: any) {
-        console.error(`❌ Failed to format output: ${err.message}`)
+        console.error(`\u274c Failed to format output: ${err.message}`)
         process.exit(1)
     }
 }

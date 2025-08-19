@@ -1,6 +1,6 @@
 // src/bin/migrate.ts
 
-import fs from 'fs/promises'
+import * as fs from 'fs/promises'
 import path from 'path'
 import { parsePrompt } from '@/engine/parse/parsePrompt'
 import { migratePrompt } from '@/engine/migrate/migratePrompt'
@@ -39,7 +39,7 @@ export async function migratePromptCLI() {
     }
 
     if (prompt.schemaVersion === '1.2.0') {
-        console.log('✅ Prompt is already at schema version 1.2.0 — no migration needed.')
+        console.log('\u2705 Prompt is already at schema version 1.2.0 \u2014 no migration needed.')
         process.exit(0)
     }
 
@@ -50,14 +50,14 @@ export async function migratePromptCLI() {
     try {
         schema = await schemaLoader()
     } catch (err: any) {
-        console.error(`❌ Failed to load schema: ${err.message}`)
+        console.error(`\u274c Failed to load schema: ${err.message}`)
         process.exit(1)
     }
 
-    const result = await validatePrompt(migrated, schema) // ✅ make this `await`
+    const result = await validatePrompt(migrated); // Adjusted to match expected argument count
 
     if (!result.valid) {
-        console.error('❌ Migration produced an invalid prompt. Validation errors:')
+        console.error('\u274c Migration produced an invalid prompt. Validation errors:')
         for (const err of result.errors || []) {
             console.error(`  - ${err.instancePath}: ${err.message}`)
         }
@@ -70,9 +70,9 @@ export async function migratePromptCLI() {
         const outPath = path.resolve(flags.out)
         try {
             await fs.writeFile(outPath, output, 'utf-8')
-            console.log(`✅ Migrated prompt saved to ${flags.out}`)
+            console.log(`\u2705 Migrated prompt saved to ${flags.out}`)
         } catch (err: any) {
-            console.error(`❌ Failed to write output file: ${err.message}`)
+            console.error(`\u274c Failed to write output file: ${err.message}`)
             process.exit(1)
         }
     } else {

@@ -12,24 +12,20 @@ import chalk from 'chalk'
 export function formatAsPlainText(raw: any): string {
     const isTTY = process.stdout.isTTY
 
-    if (typeof raw === 'string') {
-        return isTTY ? chalk.white(raw) : raw
-    }
-
-    if (
-        typeof raw === 'number' ||
-        typeof raw === 'boolean' ||
-        raw === null
-    ) {
-        const base = String(raw)
-        return isTTY ? chalk.cyan(base) : base
-    }
-
-    if (typeof raw === 'undefined') {
-        return isTTY ? chalk.gray('[undefined]') : '[undefined]'
+    if (raw === null || raw === undefined) {
+        return isTTY ? chalk.gray('[null/undefined]') : '[null/undefined]'
     }
 
     try {
+        if (typeof raw === 'string') {
+            return isTTY ? chalk.white(raw) : raw
+        }
+
+        if (typeof raw === 'number' || typeof raw === 'boolean') {
+            const base = String(raw)
+            return isTTY ? chalk.cyan(base) : base
+        }
+
         const formatted = JSON.stringify(raw, null, 2)
 
         if (!isTTY) return formatted
@@ -45,8 +41,8 @@ export function formatAsPlainText(raw: any): string {
                 return chalk.white(line)
             })
             .join('\n')
-
-    } catch {
-        return isTTY ? chalk.red('[Error: Failed to stringify output]') : '[Error: Failed to stringify output]'
+    } catch (error) {
+        console.error('Error formatting as plain text:', error)
+        return isTTY ? chalk.red('[error formatting output]') : '[error formatting output]'
     }
 }

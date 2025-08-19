@@ -1,6 +1,6 @@
 // src/devtools/cli/init.ts
 
-import fs from 'fs/promises'
+import * as fs from 'fs/promises'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { initPrompt } from '@/engine/init/initPrompt'
@@ -46,14 +46,14 @@ export async function initPromptCLI() {
     }
 
     try {
-        await fs.writeFile(absPath, JSON.stringify(prompt, null, 2), 'utf-8')
-        console.log(`✅ Created prompt at ${file}`)
+        await fs.writeFile(absPath, JSON.stringify(prompt, null, 2), 'utf-8');
+        console.log(`\u2705 Created prompt at ${file}`);
     } catch (err: any) {
-        console.error(`❌ Failed to write file: ${err.message}`)
-        process.exit(1)
+        console.error(`\u274c Failed to write file: ${err.message}`);
+        process.exit(1);
     }
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-    initPromptCLI()
+    initPromptCLI();
 }
