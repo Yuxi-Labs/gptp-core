@@ -4,7 +4,7 @@
     "module": "ES2022",
     "moduleResolution": "Node",
     "outDir": "./dist",
-    "rootDir": "./src", // All source files live here
+    "rootDir": "./src",
     "declaration": true,
     "declarationMap": true,
     "esModuleInterop": true,
@@ -16,9 +16,9 @@
     "types": ["vitest"],
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["./*"]
     }
   },
-  "include": ["src"], // ONLY src is needed
-  "exclude": ["node_modules", "dist", "vitest.config.ts"] // exclude config explicitly
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }
