@@ -114,6 +114,36 @@ Notes:
 
 ---
 
+## 🧪 Try it (end-to-end)
+
+Below is a minimal flow to run a sample prompt with mocked execution and format the output as markdown.
+
+```powershell
+# 1) Install deps
+npm install
+
+# 2) Use mocked model responses
+$env:MOCK = 'true'
+
+# 3) Execute the hello world example (prints model output)
+npm run gptp:execute -- docs/examples/hello-world.gptp name=World
+
+# 4) Format an arbitrary output file (supports markdown/json/html/plain-text)
+#    Here we format the raw model output or a string file
+#    Example expects output.txt or a JSON with {"content": "..."}
+npm run gptp:format -- output.txt --format=markdown
+```
+
+If you want to call OpenAI for real, unset `MOCK` and set your API key:
+
+```powershell
+Remove-Item Env:MOCK -ErrorAction SilentlyContinue
+$env:OPENAI_API_KEY = '<your-key>'
+npm run gptp:execute -- docs/examples/hello-world.gptp name=World
+```
+
+---
+
 ## 🔍 Validation policy
 
 - Fetch schema from the remote URL in `GPTP_SCHEMA_URL` first
