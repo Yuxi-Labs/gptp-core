@@ -1,4 +1,4 @@
-import { parseTestFlags } from "./helpers/parsing/parseFlags";
+import { parseTestFlags } from "../helpers/parsing/parseFlags";
 import { parsePrompt } from "@/engine/parse/parsePrompt";
 import { normalizePrompt } from "@/engine/normalize/normalizePrompt";
 import { executePrompt } from "@/engine/execute/executePrompt";
@@ -47,10 +47,10 @@ async function run() {
 
             const output = result.modelOutput;
 
-            // 🔧 FIXED LINE BELOW: formatPrompt expects format-specific params, not the whole prompt
+            // Format using document-declared output settings (if present)
             const formatted = formatPrompt(output, {
-                outputFormat: normalized.params?.outputFormat,
-                outputSchema: normalized.params?.outputSchema,
+                outputFormat: normalized.output_format as any,
+                outputSchema: normalized.output_schema as any,
             });
 
             const pass = matchExpectations(formatted, test);
