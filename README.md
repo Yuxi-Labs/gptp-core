@@ -50,7 +50,7 @@ Requires Node.js 18+.
 ## 📦 Installation
 
 ```sh
-npm install @yuxi-labs/gptp-core
+npm install @yuxilabs/gptp-core
 ```
 
 ---
