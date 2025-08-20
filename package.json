@@ -1,7 +1,10 @@
 {
-  "name": "@yuxi-labs/gptp-core",
+  "name": "@yuxilabs/gptp-core",
   "version": "0.2.0",
   "description": "Core validation, formatting and execution logic for the GPTP file format.",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -52,7 +55,7 @@
   "bugs": {
     "url": "https://github.com/Yuxi-Labs/gptp-core/issues"
   },
-  "homepage": "https://github.com/Yuxi-Labs/gptp-core",
+  "homepage": "https://www.yuxilabs.com/gptp-core",
   "engines": {
     "node": ">=18"
   },
@@ -75,9 +78,5 @@
     "chalk": "^5.5.0",
     "lodash-es": "^4.17.21",
     "node-fetch": "^3.3.2"
-  },
-  "funding": {
-    "type": "individual",
-    "url": "https://github.com/sponsors/WilliamSawyerr"
   }
 }
