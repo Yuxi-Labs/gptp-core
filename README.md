@@ -2,7 +2,7 @@
 
 <p>
   <!-- Build status -->
-  <img src="https://img.shields.io/github/actions/workflow/status/Yuxi-Labs/gptp-core/continuous-integration.yml?branch=release%2Fv0.2.0" alt="Build Status" />
+  <img src="https://img.shields.io/github/actions/workflow/status/Yuxi-Labs/gptp-core/continuous-integration.yml?branch=release%2Fv0.2.1" alt="Build Status" />
 
   <!-- Latest Release -->
   <img src="https://img.shields.io/github/v/release/Yuxi-Labs/gptp-core?include_prereleases&sort=semver" alt="Latest Release" />
@@ -23,9 +23,9 @@
   <img src="https://img.shields.io/badge/License-MIT-orange.svg" alt="License: MIT" />
 </p>
 
-Core SDK for working with **GPTP** (Generative Prompt Template Package) files.
+Core SDK for working with **GPT Prompt (GPTP)** files.
 
-This library provides validation, normalization, execution, formatting, migration, diffing, and inspection utilities for GPTP. It’s designed to be reused by:
+This library provides validation, normalization, execution, formatting, migration, diffing and inspection utilities for GPTP. It is designed to be used by:
 
 - CLI tools
 - VS Code extensions
