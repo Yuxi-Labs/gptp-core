@@ -1,6 +1,6 @@
 {
   "name": "@yuxilabs/gptp-core",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Core validation, formatting and execution logic for the GPTP file format.",
   "publishConfig": {
     "access": "public"
@@ -50,7 +50,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Yuxi-Labs/gptp-core"
+    "url": "git+https://github.com/Yuxi-Labs/gptp-core.git"
   },
   "bugs": {
     "url": "https://github.com/Yuxi-Labs/gptp-core/issues"
