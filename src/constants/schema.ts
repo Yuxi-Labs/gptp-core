@@ -1,0 +1,2 @@
+// src/constants/schema.ts
+export const CURRENT_SCHEMA_VERSION = '1.2.0'

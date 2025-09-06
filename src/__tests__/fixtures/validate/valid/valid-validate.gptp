@@ -1,0 +1,17 @@
+{
+  "$doctype": "gptp",
+  "schemaVersion": "1.2.0",
+  "promptVersion": "1.0.0",
+  "title": "Valid Validate Test",
+  "description": "A valid prompt for validation testing.",
+  "messages": [
+    { "role": "system", "content": "System initialization message." },
+    { "role": "user", "content": "Hello, validate this!" }
+  ],
+  "params": {
+    "model": "gpt-3",
+    "temperature": 0.7,
+    "top_p": 1,
+    "max_tokens": 64
+  }
+}

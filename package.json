@@ -1,0 +1,92 @@
+{
+  "name": "@yuxilabs/gptp-core",
+  "version": "0.3.0",
+  "description": "Core validation, formatting and execution logic for the GPTP file format.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+  "dist/index.*",
+  "dist/api/**",
+  "dist/constants/**",
+  "dist/engine/**",
+  "dist/providers/**",
+  "dist/types/**",
+  "dist/utils/**"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "clean": "rimraf dist",
+  "clean:src": "rimraf --glob \"src/**/*.js\" \"src/**/*.d.ts\" \"src/**/*.d.ts.map\" \"src/**/*.js.map\"",
+  "clean:tsbuild": "rimraf --glob \"*.tsbuildinfo\" \"**/*.tsbuildinfo\"",
+  "clean:all": "npm run clean && npm run clean:src && npm run clean:tsbuild",
+  "build": "tsc -p tsconfig.build.json",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write .",
+    "test": "vitest",
+    "test:watch": "vitest",
+    "dev": "cross-env NODE_ENV=development tsx --inspect src/index.ts",
+    "dev:debug": "cross-env GPTP_DEBUG=true tsx src/index.ts",
+    "gptp:execute": "tsx src/devtools/cli/execute.ts",
+    "gptp:format": "tsx src/devtools/cli/format.ts",
+    "gptp:diff": "tsx src/devtools/cli/diff.ts",
+    "gptp:init": "tsx src/devtools/cli/init.ts",
+    "gptp:migrate": "tsx src/devtools/cli/migrate.ts",
+    "gptp:convert": "tsx src/devtools/cli/convert.ts",
+  "gptp:bench": "tsx src/devtools/benchmarking/runBench.ts",
+  "gptp:play": "tsx src/devtools/playground/runPlayground.ts",
+    "print:codebase": "tsx src/devtools/capture/printCodebase.ts",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "gptp",
+    "prompt",
+    "file-format",
+    "validation",
+    "execution",
+    "vscode-extension",
+    "sdk"
+  ],
+  "author": "William Sawyerr",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yuxi-Labs/gptp-core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Yuxi-Labs/gptp-core/issues"
+  },
+  "homepage": "https://www.yuxilabs.com/gptp-core",
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/lodash-es": "^4.17.12",
+    "@types/node": "^20.0.0",
+    "cross-env": "^10.0.0",
+    "dotenv": "^17.2.1",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "rimraf": "^5.0.10",
+    "tsx": "^4.7.0",
+    "typescript": "^5.0.0",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^2.1.1",
+    "ajv-keywords": "^5.1.0",
+    "chalk": "^5.5.0",
+    "lodash-es": "^4.17.21",
+    "node-fetch": "^3.3.2"
+  }
+}
