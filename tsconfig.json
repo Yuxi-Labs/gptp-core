@@ -5,8 +5,7 @@
     "moduleResolution": "Node",
     "outDir": "./dist",
     "rootDir": "./src",
-    "declaration": true,
-    "declarationMap": true,
+  "noEmit": true,
     "esModuleInterop": true,
     "moduleDetection": "force",
     "resolveJsonModule": true,
@@ -23,8 +22,6 @@
   "exclude": [
     "node_modules",
     "dist",
-    "src/**/__tests__/**",
-    "src/**/*.test.ts",
     "src/**/__mocks__/**"
   ]
 }

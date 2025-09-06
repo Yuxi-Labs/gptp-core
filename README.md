@@ -34,16 +34,19 @@ This library provides validation, normalization, execution, formatting, migratio
 
 ---
 
+See the latest changes in [CHANGELOG.md](./CHANGELOG.md).
+
 ## ✨ Features
 
 - Validation: Validates `.gptp` JSON against the official GPTP Schema (v1.2.0). Remote-first with cached fallback.
 - Parsing & Normalization: Parse prompt files and normalize shape for execution.
 - Execution Engine: Resolve variables and call providers (OpenAI, Azure OpenAI, Anthropic, Meta Llama, Mistral, Cohere, Local).
+- Provider router: Prompts are provider‑agnostic. A single `.gptp` can run against multiple providers via the `connections` block; responses are normalized.
 - Formatting: Output formatters for `markdown`, `html`, `json`, and `plain-text`.
 - Diff & Migrate: Compare prompts and upgrade between schema versions.
 - Inspect: Extract variables and summarize message roles.
 
-Requires Node.js 18+.
+Tested on Node.js 18, 20, and 22.
 
 ---
 
@@ -55,7 +58,7 @@ npm install @yuxilabs/gptp-core
 
 ---
 
-## � Quick Start (API)
+## 🚀 Quick Start (API)
 
 ```ts
 import { parsePrompt, validatePrompt, executePrompt, formatPrompt } from '@yuxi-labs/gptp-core';
@@ -75,6 +78,9 @@ async function main() {
   const { resolvedMessages, modelOutput } = await executePrompt(prompt, {
     input: { name: 'World' },
     run: false,
+    // Optional cancellation & timeout support
+    // signal: new AbortController().signal,
+    // timeoutMs: 10_000,
   });
 
   // 4) Format output as markdown
@@ -94,59 +100,74 @@ main().catch((err) => {
 
 This repository ships several helper scripts for local development and demos:
 
-- Execute: `npm run gptp:execute` (supports `MOCK=true`)
+- Execute: `npm run gptp:execute`
 - Format: `npm run gptp:format`
 - Diff: `npm run gptp:diff`
 - Init: `npm run gptp:init`
 - Migrate: `npm run gptp:migrate`
 - Convert: `npm run gptp:convert`
+- Benchmark: `npm run gptp:bench -- <file.gptp> [--iters=50] [--concurrency=5] [--run] [--out=REPO/BUILD/bench.json]`
+- Playground: `npm run gptp:play -- <file.gptp> key=value ...`
 
 Example (Windows PowerShell):
 
 ```powershell
-$env:MOCK = 'true'
+$env:OPENAI_API_KEY = '<your-key>'
 npm run gptp:execute
 ```
 
 Notes:
-- With `MOCK=true`, model calls return a stubbed response.
-- To call OpenAI for real, set `run: true` in `executePrompt` and configure `OPENAI_API_KEY`.
+- To call providers, set `run: true` in `executePrompt` and configure provider credentials.
+ - `gptp:play` prints resolved messages and hashes, plus model output (great for debugging interpolation).
+ - One run targets one provider. Change `connections.active` to switch providers; there’s no built‑in fan‑out.
 
 ---
 
 ## 🧪 Try it (end-to-end)
 
-Below is a minimal flow to run a sample prompt with mocked execution and format the output as markdown.
+Below is a minimal flow to run a sample prompt and format the output as markdown.
 
 ```powershell
 # 1) Install deps
 npm install
 
-# 2) Use mocked model responses
-$env:MOCK = 'true'
-
-# 3) Execute the hello world example (prints model output)
-npm run gptp:execute -- docs/examples/hello-world.gptp name=World
+# 2) Execute the hello world example (prints model output)
+npm run gptp:execute -- docs/examples/hello-world.gptp user_name=World
 
 # 4) Format an arbitrary output file (supports markdown/json/html/plain-text)
 #    Here we format the raw model output or a string file
 #    Example expects output.txt or a JSON with {"content": "..."}
 npm run gptp:format -- output.txt --format=markdown
+
+# Optional: run quick playground
+npm run gptp:play -- docs/examples/hello-world.gptp user_name=World
+
+# Optional: run a micro-benchmark (add --run to call providers for real)
+npm run gptp:bench -- docs/examples/hello-world.gptp --iters=25 --concurrency=4
 ```
 
-If you want to call OpenAI for real, unset `MOCK` and set your API key:
+If you want to call OpenAI:
 
 ```powershell
-Remove-Item Env:MOCK -ErrorAction SilentlyContinue
 $env:OPENAI_API_KEY = '<your-key>'
-npm run gptp:execute -- docs/examples/hello-world.gptp name=World
+npm run gptp:execute -- docs/examples/hello-world.gptp user_name=World
+```
+
+No keys? Try the Local adapter (predictable output):
+
+```powershell
+# In your .gptp, add a provider block
+# "connections": { "active": "local", "providers": { "local": { "type": "local" } } }
+npm run gptp:execute -- docs/examples/hello-world.gptp user_name=World
+# Expected output: LOCAL:Hello World!
 ```
 
 ---
 
 ## 🔍 Validation policy
 
-- Fetch schema from the remote URL in `GPTP_SCHEMA_URL` first
+- If `GPTP_SCHEMA_LOCAL` is set to a file path, load that JSON schema first (offline/dev)
+- Otherwise fetch the remote URL in `GPTP_SCHEMA_URL` first
 - If remote is unavailable, fall back to the local cache at `.gptp/cache/gptp.schema.json`
 - If both fail, validation aborts with a clear error message
 
@@ -160,13 +181,50 @@ https://raw.githubusercontent.com/Yuxi-Labs/gptp/refs/tags/v1.2.0/schema/gptp.sc
 
 ## ⚙️ Environment variables
 
-| Name               | Purpose                                               | Required |
-| ------------------ | ----------------------------------------------------- | -------- |
-| `GPTP_SCHEMA_URL`  | Remote URL for GPTP JSON Schema                       | ✅       |
-| `GPTP_DEBUG`       | Verbose debug logs (`true`/`false`)                   | ❌       |
-| `OPENAI_API_KEY`   | Required when executing with OpenAI (run: true)       | ❌       |
+| Name                     | Purpose                                                     | Required |
+| ------------------------ | ----------------------------------------------------------- | -------- |
+| `GPTP_SCHEMA_LOCAL`      | Absolute/relative path to a local GPTP JSON Schema         | ❌       |
+| `GPTP_SCHEMA_URL`        | Remote URL for GPTP JSON Schema                            | ✅       |
+| `GPTP_DEBUG`             | Verbose debug logs (`true`/`false`)                        | ❌       |
+| `OPENAI_API_KEY`         | Needed for OpenAI provider                                 | ❌       |
+| `AZURE_OPENAI_ENDPOINT`  | Azure resource endpoint (e.g., https://foo.openai.azure.com) | ❌     |
+| `AZURE_OPENAI_API_KEY`   | Azure OpenAI API key                                       | ❌       |
+| `AZURE_OPENAI_DEPLOYMENT`| Azure deployment name (often mapped from `params.model`)   | ❌       |
+| `AZURE_OPENAI_API_VERSION` | Azure API version (default: 2024-02-15-preview)         | ❌       |
+| `ANTHROPIC_API_KEY`      | Needed for Anthropic provider                              | ❌       |
+| `MISTRAL_API_KEY`        | Needed for Mistral provider                                | ❌       |
+| `COHERE_API_KEY`         | Needed for Cohere provider                                 | ❌       |
+| `OPENROUTER_API_KEY`     | Needed for Meta (via OpenRouter)                           | ❌       |
+| `META_LLAMA_API_KEY`     | Optional fallback for Meta                                 | ❌       |
 
-Other providers may require their own keys; see provider implementations under `src/providers/*`.
+Local adapter requires no keys.
+
+Secrets policy:
+- In `.gptp`, reference secrets as `env:NAME` (for example, `env:ANTHROPIC_API_KEY`) instead of inline values.
+- Inline secrets in `.gptp` are discouraged and will log warnings at runtime.
+- During execution, the runtime resolves `env:*` references and can populate canonical env names (e.g., `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`).
+
+---
+
+## 🔀 Provider routing (connections)
+
+Prompts are provider‑agnostic. The `connections` block selects the adapter; if missing, default is `openai`.
+
+```jsonc
+{
+  // ...other GPTP fields
+  "connections": {
+    "active": "azure-prod",
+    "providers": {
+      "azure-prod": { "type": "microsoft" },
+      "claude": { "type": "anthropic" },
+      "default": { "type": "openai" }
+    }
+  }
+}
+```
+
+Run the same prompt across providers by changing `connections.active` between runs.
 
 ---
 
@@ -177,7 +235,7 @@ From `@yuxi-labs/gptp-core`:
 - `parsePrompt(filePath)` → `Promise<GPTPDocument>`
 - `validatePrompt(prompt)` → `Promise<{ valid: boolean; errors: AjvError[]; data?: GPTPDocument }>`
 - `normalizePrompt(prompt)` → `GPTPDocument`
-- `executePrompt(prompt, { input, run })` → `Promise<{ resolvedMessages, modelOutput }>`
+- `executePrompt(prompt, { input, run, signal?, timeoutMs?, retry?, lockfilePath? })` → `Promise<{ resolvedMessages, modelOutput, renderedPromptHash?, variablesHash? }>`
 - `formatPrompt(rawOutput, { outputFormat, outputSchema })` → `string`
 - `formatOutput(rawOutput, { outputFormat, outputSchema })` → `string`
 - `inspectPrompt`, `getDeclaredVariables`, `getRequiredVariables`, `getMessageRoles`, `summarizePrompt`
@@ -226,4 +284,4 @@ npm run dev:debug
 
 ## 📜 License
 
-MIT © [Yuxi Labs](https://github.com/Yuxi-Labs)
+MIT © William Sawyerr

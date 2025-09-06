@@ -2,5 +2,11 @@
 .vscode/
 node_modules/
 dist/
+.tsbuildinfo
+src/**/*.js
+src/**/*.d.ts
+src/**/*.d.ts.map
 .env
 .env.local
+.gptp/
+REPO/BUILD/

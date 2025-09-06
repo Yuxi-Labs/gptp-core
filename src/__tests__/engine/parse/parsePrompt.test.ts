@@ -15,7 +15,7 @@ import { parsePrompt } from '@/engine/parse/parsePrompt'
 import type { GPTPDocument } from '@/types/gptpTypes'
 import { vi } from 'vitest'
 
-const TEST_DIR = path.resolve('.gptp/tests')
+const TEST_DIR = path.resolve('REPO/BUILD/parse-tests')
 
 const validPrompt: GPTPDocument = {
     $doctype: 'gptp',

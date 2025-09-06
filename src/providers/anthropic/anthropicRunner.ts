@@ -5,19 +5,6 @@ export async function callAnthropic(opts: {
     top_p: number;
     max_tokens: number;
 }): Promise<any> {
-    if (process.env.MOCK === 'true') {
-        return {
-            choices: [
-                {
-                    message: {
-                        role: 'assistant',
-                        content: `[Mocked response] Received ${opts.messages.length} messages. Model: ${opts.model}`,
-                    },
-                },
-            ],
-        };
-    }
-
     // Placeholder for real API call
     throw new Error('Anthropic API integration not implemented yet.');
 }

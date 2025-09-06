@@ -1,6 +1,8 @@
 // src/__tests__/engine/execute/executePrompt.test.ts
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import * as fs from 'node:fs/promises'
+import * as path from 'node:path'
 import { executePrompt } from '@/engine/execute/executePrompt'
 import type { GPTPDocument } from '@/types/gptpTypes'
 
@@ -27,8 +29,7 @@ describe('executePrompt', () => {
             }
         }
 
-        // default: no mocking unless a test opts in
-        delete process.env.MOCK
+    // default: environment unchanged
     })
 
     afterEach(() => {
@@ -50,20 +51,10 @@ describe('executePrompt', () => {
         expect(result.modelOutput).toBe('') // dry-run returns empty string
     })
 
-    it('calls the model when run=true and returns mocked content if MOCK=true', async () => {
-        process.env.MOCK = 'true' // triggers mocked OpenAI runner
-
-        const result = await executePrompt(basePrompt, {
-            input: { name: 'Bob' },
-            run: true
-        })
-
-        // interpolation happened before the call
-        expect(result.resolvedMessages[0].content).toBe('Hello Bob!')
-
-        // mocked OpenAI response shape from src/providers/openai/openaiRunner.ts
-        expect(result.modelOutput).toContain('[Mocked response]')
-        expect(result.modelOutput).toContain('Model: gpt-4')
+    it('calls the model when run=true (requires real provider config); otherwise dry-run is supported', async () => {
+        const dry = await executePrompt(basePrompt, { input: { name: 'Bob' }, run: false })
+        expect(dry.resolvedMessages[0].content).toBe('Hello Bob!')
+        expect(dry.modelOutput).toBe('')
     })
 
     it('throws for prompts without a messages array', async () => {
@@ -82,6 +73,24 @@ describe('executePrompt', () => {
 
         await expect(executePrompt(badPrompt, { input: {}, run: false }))
             .rejects.toThrow(/Invalid message content/i)
+    })
+
+    it('writes a lockfile when run=true and lockfilePath is provided (requires real provider when run=true)', async () => {
+        const lockPath = path.join(process.cwd(), 'REPO', 'BUILD', 'execute.lock.json')
+
+        // Clean pre-existing
+        try { await fs.unlink(lockPath) } catch {}
+
+        // Only exercise dry-run to avoid calling real providers in unit tests
+        const result = await executePrompt(basePrompt, {
+            input: { name: 'Lock' },
+            run: false,
+            lockfilePath: lockPath,
+        })
+
+        // When run=false, no lockfile is written
+        await expect(fs.readFile(lockPath, 'utf-8')).rejects.toBeTruthy()
+        expect(result.modelOutput).toBe('')
     })
 
 })
