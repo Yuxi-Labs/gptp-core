@@ -36,12 +36,12 @@ This library provides validation, normalization, execution, formatting, migratio
 
 See the latest changes in [CHANGELOG.md](./CHANGELOG.md).
 
-## ✨ Features
+## Features
 
 - Validation: Validates `.gptp` JSON against the official GPTP Schema (v1.2.0). Remote-first with cached fallback.
 - Parsing & Normalization: Parse prompt files and normalize shape for execution.
 - Execution Engine: Resolve variables and call providers (OpenAI, Azure OpenAI, Anthropic, Meta Llama, Mistral, Cohere, Local).
-- Provider router: Prompts are provider‑agnostic. A single `.gptp` can run against multiple providers via the `connections` block; responses are normalized.
+- Provider router: Prompts are provider-agnostic. A single `.gptp` can run against multiple providers via the `connections` block; responses are normalized.
 - Formatting: Output formatters for `markdown`, `html`, `json`, and `plain-text`.
 - Diff & Migrate: Compare prompts and upgrade between schema versions.
 - Inspect: Extract variables and summarize message roles.
@@ -50,7 +50,7 @@ Tested on Node.js 18, 20, and 22.
 
 ---
 
-## 📦 Installation
+## Installation
 
 ```sh
 npm install @yuxilabs/gptp-core
@@ -58,7 +58,7 @@ npm install @yuxilabs/gptp-core
 
 ---
 
-## 🚀 Quick Start (API)
+## Quick Start (API)
 
 ```ts
 import { parsePrompt, validatePrompt, executePrompt, formatPrompt } from '@yuxi-labs/gptp-core';
@@ -70,7 +70,7 @@ async function main() {
   // 2) Validate against the GPTP schema (remote-first with cached fallback)
   const validation = await validatePrompt(prompt);
   if (!validation.valid) {
-    console.error('❌ Validation failed:', validation.errors);
+    console.error('Validation failed:', validation.errors);
     process.exit(1);
   }
 
@@ -96,7 +96,7 @@ main().catch((err) => {
 
 ---
 
-## 🧰 CLI scripts (for this repo)
+## CLI scripts (for this repo)
 
 This repository ships several helper scripts for local development and demos:
 
@@ -119,11 +119,11 @@ npm run gptp:execute
 Notes:
 - To call providers, set `run: true` in `executePrompt` and configure provider credentials.
  - `gptp:play` prints resolved messages and hashes, plus model output (great for debugging interpolation).
- - One run targets one provider. Change `connections.active` to switch providers; there’s no built‑in fan‑out.
+ - One run targets one provider. Change `connections.active` to switch providers; there's no built-in fan-out.
 
 ---
 
-## 🧪 Try it (end-to-end)
+## Try it (end-to-end)
 
 Below is a minimal flow to run a sample prompt and format the output as markdown.
 
@@ -164,7 +164,7 @@ npm run gptp:execute -- docs/examples/hello-world.gptp user_name=World
 
 ---
 
-## 🔍 Validation policy
+## Validation policy
 
 - If `GPTP_SCHEMA_LOCAL` is set to a file path, load that JSON schema first (offline/dev)
 - Otherwise fetch the remote URL in `GPTP_SCHEMA_URL` first
@@ -179,7 +179,7 @@ https://raw.githubusercontent.com/Yuxi-Labs/gptp/refs/tags/v1.2.0/schema/gptp.sc
 
 ---
 
-## ⚙️ Environment variables
+## Environment variables
 
 | Name                     | Purpose                                                     | Required |
 | ------------------------ | ----------------------------------------------------------- | -------- |
@@ -206,9 +206,9 @@ Secrets policy:
 
 ---
 
-## 🔀 Provider routing (connections)
+## Provider routing (connections)
 
-Prompts are provider‑agnostic. The `connections` block selects the adapter; if missing, default is `openai`.
+Prompts are provider-agnostic. The `connections` block selects the adapter; if missing, default is `openai`.
 
 ```jsonc
 {
@@ -228,7 +228,7 @@ Run the same prompt across providers by changing `connections.active` between ru
 
 ---
 
-## 📚 API surface
+## API surface
 
 From `@yuxi-labs/gptp-core`:
 
@@ -247,7 +247,7 @@ Formatting supports: `markdown`, `html`, `json`, `plain-text`. Unsupported forma
 
 ---
 
-## 🧪 Development
+## Development
 
 Install deps:
 
@@ -282,6 +282,6 @@ npm run dev:debug
 
 ---
 
-## 📜 License
+## License
 
-MIT © William Sawyerr
+MIT (c) William Sawyerr
