@@ -8,5 +8,6 @@ src/**/*.d.ts
 src/**/*.d.ts.map
 .env
 .env.local
+.env.example
 .gptp/
 REPO/BUILD/
