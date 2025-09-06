@@ -284,4 +284,4 @@ npm run dev:debug
 
 ## 📜 License
 
-MIT © William Sawyerr
+MIT © William Sawyerrr
