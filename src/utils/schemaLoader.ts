@@ -23,9 +23,17 @@ export async function schemaLoader(customCachePath?: string): Promise<object> {
         }
     }
 
+    // If no remote URL is provided, try to use the cached schema
     if (!remoteUrl) {
-        logger.error('[schema]', '❌ GPTP_SCHEMA_URL not set')
-        throw new Error('GPTP_SCHEMA_URL not defined in environment')
+        logger.info('[schema]', '🌐 GPTP_SCHEMA_URL not set; attempting to use cached schema...')
+        try {
+            const cached = await fs.readFile(cachePath, 'utf8')
+            logger.info('[schema]', `📦 Loaded cached schema from: ${cachePath}`)
+            return JSON.parse(cached)
+        } catch (cacheErr) {
+            logger.error('[schema]', '❌ No cached schema available and no remote URL configured.')
+            throw new Error('Failed to load schema: set GPTP_SCHEMA_LOCAL or GPTP_SCHEMA_URL, or add a cached schema at .gptp/cache/gptp.schema.json.')
+        }
     }
 
     logger.info('[schema]', `📡 Fetching schema from: ${remoteUrl}`)

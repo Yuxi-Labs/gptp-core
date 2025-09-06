@@ -65,6 +65,8 @@ describe('schemaLoader()', () => {
     it('throws if GPTP_SCHEMA_URL is not set', async () => {
         vi.spyOn(env, 'getEnv').mockReturnValue(undefined)
 
-        await expect(schemaLoader(TEST_CACHE_PATH)).rejects.toThrow(/not defined in environment/)
+    // With the new fallback logic, when no URL is set we attempt to read the cache.
+    // If the cache is missing, we throw a generic failure to load schema.
+    await expect(schemaLoader(TEST_CACHE_PATH)).rejects.toThrow(/Failed to load schema/)
     })
 })
