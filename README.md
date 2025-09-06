@@ -2,7 +2,7 @@
 
 <p>
   <!-- Build status -->
-  <img src="https://img.shields.io/github/actions/workflow/status/Yuxi-Labs/gptp-core/continuous-integration.yml?branch=release%2Fv0.2.1" alt="Build Status" />
+  <img src="https://img.shields.io/github/actions/workflow/status/Yuxi-Labs/gptp-core/continuous-integration.yml?branch=release%2Fv0.3.0" alt="Build Status" />
 
   <!-- Latest Release -->
   <img src="https://img.shields.io/github/v/release/Yuxi-Labs/gptp-core?include_prereleases&sort=semver" alt="Latest Release" />
