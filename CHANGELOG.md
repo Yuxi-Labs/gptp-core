@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [0.3.1] - 2025-10-05
+
+### Added
+- Bring Your Own Key (BYOK) provider runners under `src/providers/**` for OpenAI, Azure OpenAI, Anthropic, Mistral, Cohere, Meta (via OpenRouter), and Local.
+- Local backend supports `echo` (default), `lmstudio` (OpenAI-compatible on localhost), and `ollama` (local LLM API).
+- Mocked provider tests (no real keys needed): happy path network responses and missing-key validation.
+
+### Changed
+- Provider router now imports from `providers/*` (was `adapters/*`) to align with published files.
+- Build now runs `tsc-alias` to rewrite `@/` path aliases to relative paths in `dist` for runtime compatibility.
+- README updated with BYOK policy and local backend env vars.
+
+### Fixed
+- `npm pack --dry-run` now includes `dist/providers/**` and produces alias-resolved imports, preventing runtime module resolution errors.
+
 ## [0.3.0] - 2025-09-06
 
 ### Added

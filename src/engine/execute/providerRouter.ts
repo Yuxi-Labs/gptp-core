@@ -1,11 +1,11 @@
 import type { GPTPDocument, GPTPParams } from '@/types/gptpTypes'
-import { callOpenAI } from '@/adapters/openai/openaiRunner'
-import { callMicrosoftAzureOpenAI } from '@/adapters/microsoft/microsoftAzureOpenaiRunner'
-import { callAnthropic } from '@/adapters/anthropic/anthropicRunner'
-import { callMistral } from '@/adapters/mistral/mistralRunner'
-import { callCohere } from '@/adapters/cohere/cohereRunner'
-import { callMetaLlama } from '@/adapters/meta/metaLlamaRunner'
-import { callLocal } from '@/adapters/local/localRunner'
+import { callOpenAI } from '@/providers/openai/openaiRunner'
+import { callMicrosoftAzureOpenAI } from '@/providers/microsoft/microsoftAzureOpenaiRunner'
+import { callAnthropic } from '@/providers/anthropic/anthropicRunner'
+import { callMistral } from '@/providers/mistral/mistralRunner'
+import { callCohere } from '@/providers/cohere/cohereRunner'
+import { callMetaLlama } from '@/providers/meta/metaLlamaRunner'
+import { callLocal } from '@/providers/local/localRunner'
 
 export type ProviderType = 'openai' | 'microsoft' | 'anthropic' | 'mistral' | 'cohere' | 'meta' | 'local'
 

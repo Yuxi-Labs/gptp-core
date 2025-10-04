@@ -2,7 +2,7 @@
 
 <p>
   <!-- Build status -->
-  <img src="https://img.shields.io/github/actions/workflow/status/Yuxi-Labs/gptp-core/continuous-integration.yml?branch=release%2Fv0.3.0" alt="Build Status" />
+  <img src="https://img.shields.io/github/actions/workflow/status/Yuxi-Labs/gptp-core/continuous-integration.yml?branch=release%2Fv0.3.1" alt="Build Status" />
 
   <!-- Latest Release -->
   <img src="https://img.shields.io/github/v/release/Yuxi-Labs/gptp-core?include_prereleases&sort=semver" alt="Latest Release" />
@@ -186,18 +186,27 @@ https://raw.githubusercontent.com/Yuxi-Labs/gptp/refs/tags/v1.2.0/schema/gptp.sc
 | `GPTP_SCHEMA_LOCAL`      | Absolute/relative path to a local GPTP JSON Schema         | ❌       |
 | `GPTP_SCHEMA_URL`        | Remote URL for GPTP JSON Schema                            | ✅       |
 | `GPTP_DEBUG`             | Verbose debug logs (`true`/`false`)                        | ❌       |
-| `OPENAI_API_KEY`         | Needed for OpenAI provider                                 | ❌       |
+| `OPENAI_API_KEY`         | OpenAI provider key                                        | ❌       |
 | `AZURE_OPENAI_ENDPOINT`  | Azure resource endpoint (e.g., https://foo.openai.azure.com) | ❌     |
 | `AZURE_OPENAI_API_KEY`   | Azure OpenAI API key                                       | ❌       |
 | `AZURE_OPENAI_DEPLOYMENT`| Azure deployment name (often mapped from `params.model`)   | ❌       |
 | `AZURE_OPENAI_API_VERSION` | Azure API version (default: 2024-02-15-preview)         | ❌       |
-| `ANTHROPIC_API_KEY`      | Needed for Anthropic provider                              | ❌       |
-| `MISTRAL_API_KEY`        | Needed for Mistral provider                                | ❌       |
-| `COHERE_API_KEY`         | Needed for Cohere provider                                 | ❌       |
-| `OPENROUTER_API_KEY`     | Needed for Meta (via OpenRouter)                           | ❌       |
-| `META_LLAMA_API_KEY`     | Optional fallback for Meta                                 | ❌       |
+| `ANTHROPIC_API_KEY`      | Anthropic provider key                                     | ❌       |
+| `MISTRAL_API_KEY`        | Mistral provider key                                       | ❌       |
+| `COHERE_API_KEY`         | Cohere provider key                                        | ❌       |
+| `OPENROUTER_API_KEY`     | Meta via OpenRouter provider key                           | ❌       |
+| `META_LLAMA_API_KEY`     | Alternative Meta key                                       | ❌       |
 
 Local adapter requires no keys.
+
+BYOK policy:
+- The SDK uses Bring Your Own Key. It calls provider HTTP APIs using your environment variables and does not bundle vendor SDKs.
+- Tests mock network calls; no keys are required to run the test suite.
+
+Local backends:
+- Set `GPTP_LOCAL_BACKEND` to `echo` (default), `lmstudio`, or `ollama`.
+- For LM Studio, set `LMSTUDIO_BASE_URL` (default: http://localhost:1234/v1/chat/completions).
+- For Ollama, set `OLLAMA_BASE_URL` (default: http://localhost:11434/api/chat).
 
 Secrets policy:
 - In `.gptp`, reference secrets as `env:NAME` (for example, `env:ANTHROPIC_API_KEY`) instead of inline values.
